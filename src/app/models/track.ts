@@ -1,8 +1,11 @@
 import { Artist } from "app/models/artist";
+import { Album } from "app/models/album";
 import { ExternalUrl } from "app/models/external-url";
 import { TrackLink } from "app/models/track-link";
+import { Serializable } from "app/models/serializable";
 
-export class Track {
+export class Track implements Serializable<Track> {
+  album: Album;
   artist: Artist;
   available_markets: string[];
   disc_number: number;
@@ -18,4 +21,23 @@ export class Track {
   track_number: number;
   type: string;
   uri: string;
+
+  deserialize(input) {
+    this.artist = input.artist;
+    this.available_markets = input.available_markets;
+    this.disc_number = input.disc_number;
+    this.duration_ms = input.duration_ms;
+    this.explicit = input.explicit;
+    this.external_urls = new ExternalUrl().deserialize(input.external_urls);
+    this.href = input.href;
+    this.id = input.id;
+    this.is_playable = input.is_playable;
+    this.linked_from = new TrackLink().deserialize(input.linked_from);
+    this.name = input.name;
+    this.preview_url = input.preview_url;
+    this.track_number = input.track_number
+    this.type = input.type;
+    this.uri = input.uri;
+    return this;
+  }
 }
