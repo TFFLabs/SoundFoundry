@@ -1,4 +1,30 @@
-.home-card {
-  width: 800px;
+.home-container {
+  min-width: 100vw;
+  min-height: 100vh;
+  background-image: url('../../assets/img/foundryHome.jpg');
+  background-size: cover;
+  background-clip: border-box;
+  background-attachment: scroll;
 }
+
+.home-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 24px;
+    border-radius: 12px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    margin-top: 50vh;
+}
+
+.home-button:hover {
+    background-color: white; /* Green */
+    color: #4CAF50;
+}
+
 
