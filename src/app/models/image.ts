@@ -6,9 +6,11 @@ export class Image implements Serializable<Image> {
   width: number;
 
   deserialize(input) {
-    this.height = input.height;
-    this.url = input.url;
-    this.width = input.width;
+    if (input) {
+      this.height = input.height;
+      this.url = input.url;
+      this.width = input.width;
+    }
     return this;
   }
 }

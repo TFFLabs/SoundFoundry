@@ -1,3 +1,17 @@
 <p>
-  playlist works!
+  Implement playlist here:
+	Authenticated with token: {{token}}
+	
+	dem tracks:
+	{{tracks}}
 </p>
+
+<div>
+	<a *ngFor="let track of tracks">
+		<div>
+			<img src="{{track.album.getSmallestImage().url}}" alt="{{track.album.name}}" 
+			width="{{track.album.getSmallestImage().width}}" height="{{track.album.getSmallestImage().height}}"/>
+			<h4>{{track.name}}</h4>
+		</div>
+	</a>
+</div>
