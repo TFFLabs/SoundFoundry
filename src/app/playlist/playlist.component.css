@@ -1,0 +1,10 @@
+.playlist-artist {
+  float: left;
+  line-height: 25%;
+}
+
+.playlist-album {
+  float: right;
+  line-height: 25%;
+  color:lightslategray;
+}

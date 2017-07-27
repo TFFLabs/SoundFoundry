@@ -5,7 +5,7 @@ import { Serializable } from "app/models/serializable";
 
 export class Track implements Serializable<Track> {
   album: Album;
-  artist: Artist;
+  artists: Artist[];
   available_markets: string[];
   disc_number: number;
   duration_ms: number;
@@ -24,7 +24,9 @@ export class Track implements Serializable<Track> {
   deserialize(input) {
     if (input) {
       this.album = new Album().deserialize(input.album)
-      this.artist = input.artist;
+      this.artists = input.artists.map(function(value) {
+        return new Artist().deserialize(value);
+      });
       this.available_markets = input.available_markets;
       this.disc_number = input.disc_number;
       this.duration_ms = input.duration_ms;

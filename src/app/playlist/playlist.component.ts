@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Track } from "app/models/track";
 import { PlaylistService } from "app/playlist/playlist.service";
+import { MdDialog } from "@angular/material";
 
 @Component({
   selector: "app-playlist",
@@ -11,7 +12,7 @@ export class PlaylistComponent implements OnInit {
   token: String;
   tracks: Track[] = [];
 
-  constructor(private playlistService: PlaylistService) {}
+  constructor(private playlistService: PlaylistService, public dialog: MdDialog) {}
 
   ngOnInit() {
     this.playlistService

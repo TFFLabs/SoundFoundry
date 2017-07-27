@@ -33,6 +33,8 @@ export class Album implements Serializable<Album> {
   }
 
   public getSmallestImage(): Image {
-    return this.images[0];
+    return this.images.sort(function(a, b) {
+      return a.width - b.width;
+    })[0];
   }
 }
