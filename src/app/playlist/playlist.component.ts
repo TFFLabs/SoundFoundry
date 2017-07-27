@@ -10,7 +10,7 @@ import { MdDialog } from "@angular/material";
 })
 export class PlaylistComponent implements OnInit {
   token: String;
-  tracks: Track[] = [];
+  tracks: Track[];
 
   constructor(private playlistService: PlaylistService, public dialog: MdDialog) {}
 
@@ -19,5 +19,9 @@ export class PlaylistComponent implements OnInit {
       .getCurrentPlayList()
       .then(tracks => this.tracks = tracks);
     this.token = localStorage.getItem("foundry-spotify-token");
+  }
+
+  addSong($event){
+    console.log("works!")
   }
 }

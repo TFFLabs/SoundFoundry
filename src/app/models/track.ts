@@ -24,9 +24,7 @@ export class Track implements Serializable<Track> {
   deserialize(input) {
     if (input) {
       this.album = new Album().deserialize(input.album)
-      this.artists = input.artists.map(function(value) {
-        return new Artist().deserialize(value);
-      });
+      this.artists = input.artists.map(value => new Artist().deserialize(value));
       this.available_markets = input.available_markets;
       this.disc_number = input.disc_number;
       this.duration_ms = input.duration_ms;

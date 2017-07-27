@@ -22,9 +22,7 @@ export class Album implements Serializable<Album> {
       this.external_urls = input.external_urls;
       this.href = input.href;
       this.id = input.id;
-      this.images = input.images.map(function(value) {
-        return new Image().deserialize(value);
-      });
+      this.images = input.images.map(value => new Image().deserialize(value));
       this.name = input.name;
       this.type = input.type;
       this.uri = input.uri;
@@ -33,8 +31,6 @@ export class Album implements Serializable<Album> {
   }
 
   public getSmallestImage(): Image {
-    return this.images.sort(function(a, b) {
-      return a.width - b.width;
-    })[0];
+    return this.images.sort((image1, image2) =>  image1.width - image2.width)[0];
   }
 }

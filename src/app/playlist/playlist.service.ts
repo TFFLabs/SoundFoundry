@@ -250,7 +250,7 @@ export class PlaylistService {
   }
 
   private getTracks() {
-    var json = this.getTracksJson();
+    const json = this.getTracksJson();
     return json.tracks.map(function(value) {
       return new Track().deserialize(value);
     });
