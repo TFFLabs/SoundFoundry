@@ -1,0 +1,12 @@
+.playlist-artist {
+  color:lightseagreen;
+}
+
+.playlist-album {
+  color:lightslategray;
+}
+
+.playlist-artist-album-divider {
+  color: lightslategray;
+  text-shadow: 3px 0px lightseagreen;
+}

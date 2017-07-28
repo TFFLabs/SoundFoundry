@@ -1,4 +1,28 @@
-<p>
-  Implement playlist here:
-  Authenticated with token: {{token}}
-</p>
+<div style="text-align:left">
+	<md-list>
+		<!-- remember to remove the token from this point -->
+		<h3 md-subheader mdTooltip="Token: {{token}}">Play List</h3>
+		<md-list-item *ngFor="let track of tracks">
+			<img md-list-avatar src="{{track.album.getSmallestImage().url}}" alt="{{track.album.name}}" width="{{track.album.getSmallestImage().width}}"
+			 height="{{track.album.getSmallestImage().height}}" />
+			<h3 md-line> {{track.name}}</h3>
+			<h4 md-line>
+				<a class="playlist-artist" mdTooltip="Artists">
+					<ng-container *ngFor="let artist of track.artists">
+						{{artist.name}}
+					</ng-container>
+				</a>
+				<a class="playlist-artist-album-divider">/</a>
+				<a class="playlist-album" mdTooltip="Album">
+					{{track.album.name}}
+				</a>
+			</h4>
+			<button md-icon-button>
+				<md-icon>thumb_up</md-icon>
+			</button>
+			<button md-icon-button>
+				<md-icon>list</md-icon>
+			</button>
+		</md-list-item>
+	</md-list>
+</div>
