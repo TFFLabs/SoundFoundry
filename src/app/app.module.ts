@@ -6,6 +6,7 @@ import { MdListModule } from "@angular/material";
 import { MdIconModule } from "@angular/material";
 import { MdDialogModule } from "@angular/material";
 import { MdTooltipModule } from "@angular/material";
+import { HttpModule } from "@angular/http";
 
 import { AppComponent } from "./app.component";
 import { AuthorizationService } from "./authorization.service";
@@ -14,6 +15,7 @@ import { AppRoutingModule } from "./app-routing/app-routing.module";
 import { AuthCallbackComponent } from "./auth-callback/auth-callback.component";
 import { PlaylistComponent } from "./playlist/playlist.component";
 import { PlaylistService } from "./playlist/playlist.service";
+import { SpotifyService } from "./services/spotify.service";
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import { PlaylistService } from "./playlist/playlist.service";
     MdIconModule,
     MdDialogModule,
     AppRoutingModule,
-    MdTooltipModule
+    MdTooltipModule,
+    HttpModule
   ],
   providers: [
     AuthorizationService,
@@ -40,7 +43,8 @@ import { PlaylistService } from "./playlist/playlist.service";
         value: localStorage.getItem("angular2-spotify-token")
       }
     },
-    PlaylistService
+    PlaylistService,
+    SpotifyService
   ],
   bootstrap: [AppComponent]
 })
