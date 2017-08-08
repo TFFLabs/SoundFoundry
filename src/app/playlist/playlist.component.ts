@@ -10,18 +10,24 @@ import { MdDialog } from "@angular/material";
 })
 export class PlaylistComponent implements OnInit {
   token: String;
-  tracks: Track[];
 
-  constructor(private playlistService: PlaylistService, public dialog: MdDialog) {}
+  constructor(
+    private playlistService: PlaylistService,
+    public dialog: MdDialog
+  ) {}
 
   ngOnInit() {
-    this.playlistService
-      .getCurrentPlayList()
-      .then(tracks => this.tracks = tracks);
+    this.playlistService.getCurrentPlayList();
     this.token = localStorage.getItem("foundry-spotify-token");
   }
 
-  addSong($event){
-    console.log("works!")
+  addSong($event) {
+    const songUrl: string = $event.mouseEvent.dataTransfer.getData(
+      "text/plain"
+    );
+    const songId: string = songUrl.substr(songUrl.lastIndexOf("/") + 1);
+    if (songId) {
+      this.playlistService.addTrackToTrackList(songId, this.token);
+    }
   }
 }
