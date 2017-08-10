@@ -1,8 +1,8 @@
-<div style="text-align:left">
+<div style="text-align:left; width:50%" dnd-droppable (onDropSuccess)="addSong($event)">
 	<md-list>
 		<!-- remember to remove the token from this point -->
 		<h3 md-subheader mdTooltip="Token: {{token}}">Play List</h3>
-		<md-list-item *ngFor="let track of tracks">
+		<md-list-item *ngFor="let track of playlistService.tracks">
 			<img md-list-avatar src="{{track.album.getSmallestImage().url}}" alt="{{track.album.name}}" width="{{track.album.getSmallestImage().width}}"
 			 height="{{track.album.getSmallestImage().height}}" />
 			<h3 md-line> {{track.name}}</h3>

@@ -1,9 +1,12 @@
 import { Injectable } from "@angular/core";
 import { Track } from "../models/track";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Injectable()
 export class PlaylistService {
-  constructor() {}
+  tracks: Track[];
+
+  constructor(private http: HttpClient) {}
 
   private getTracksJson() {
     return {
@@ -256,7 +259,19 @@ export class PlaylistService {
     });
   }
 
-  getCurrentPlayList(): Promise<Track[]> {
-    return Promise.resolve(this.getTracks());
+  getCurrentPlayList() {
+    Promise.resolve(this.tracks = this.getTracks());
+  }
+
+  addTrackToTrackList(trackId: String, token: String) {
+    const url = "https://api.spotify.com/v1/tracks/" + trackId;
+    const reqHeaders = new HttpHeaders({ Authorization: "Bearer " + token });
+    Promise.resolve(
+      this.http.get(url, { headers: reqHeaders }).subscribe(
+        track => {
+          this.tracks.push(new Track().deserialize(track));
+        }
+      )
+    );
   }
 }
