@@ -9,21 +9,29 @@ import { MdDialogModule } from "@angular/material";
 import { MdTooltipModule } from "@angular/material";
 
 import { AppComponent } from "./app.component";
-import { AuthorizationService } from "./authorization.service";
+import { AuthorizationService } from "./services/authorization.service";
 import { HomeComponent } from "./home/home.component";
 import { AppRoutingModule } from "./app-routing/app-routing.module";
 import { AuthCallbackComponent } from "./auth-callback/auth-callback.component";
 import { PlaylistComponent } from "./playlist/playlist.component";
-import { PlaylistService } from "./playlist/playlist.service";
-
+import { PlaylistService } from "./services/playlist.service";
+import { SpotifyService } from "./services/spotify.service";
+import { UserService } from "./services/user.service";
 import { DndModule } from "ng2-dnd";
+import { LoginComponent } from "./login/login.component";
+import { LandingComponent } from "./landing/landing.component";
+import { MdSidenavModule } from "@angular/material";
+import { MdToolbarModule } from "@angular/material";
+import { MdMenuModule } from "@angular/material";
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     PlaylistComponent,
-    AuthCallbackComponent
+    AuthCallbackComponent,
+    LoginComponent,
+    LandingComponent
   ],
   imports: [
     BrowserModule,
@@ -35,6 +43,9 @@ import { DndModule } from "ng2-dnd";
     MdDialogModule,
     AppRoutingModule,
     MdTooltipModule,
+    MdSidenavModule,
+    MdToolbarModule,
+    MdMenuModule,
     DndModule.forRoot()
   ],
   providers: [
@@ -45,7 +56,9 @@ import { DndModule } from "ng2-dnd";
         value: localStorage.getItem("angular2-spotify-token")
       }
     },
-    PlaylistService
+    PlaylistService,
+    SpotifyService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })

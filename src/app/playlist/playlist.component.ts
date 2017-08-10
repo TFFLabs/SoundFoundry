@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Track } from "app/models/track";
-import { PlaylistService } from "app/playlist/playlist.service";
+import { PlaylistService } from "app/services/playlist.service";
 import { MdDialog } from "@angular/material";
 
 @Component({

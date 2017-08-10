@@ -1,4 +1,30 @@
-<div class="home-container">
-  <button  class="home-button" (click)="login()">Join the Party</button>
+<div class="left_bar">
+    <button md-icon-button [mdMenuTriggerFor]="user_options">
+        <img *ngIf="userService.user.images" src="{{userService.user.thumbnail_small.url}}" alt="{{userService.user.display_name}}" class="profile_image"/>
+    </button>
+    <button md-icon-button class="devices_button" [mdMenuTriggerFor]="devices_list" (click)="userService.getUserDevices()">
+        <md-icon>devices</md-icon>
+    </button>
+    <button md-icon-button class="help_button">
+        <md-icon>help</md-icon>
+    </button>
+</div>
+<div class="canvas">
+    <app-playlist></app-playlist>
 </div>
 
+<md-menu #devices_list="mdMenu" [overlapTrigger]="false">
+    <div *ngFor="let device of userService.devices.devices">
+        <button md-menu-item (click)="selectedOption = option">
+            <md-icon> {{device.getSelectedStatusIcon()}} </md-icon>
+            <span> {{device.name}} </span>   
+        </button>
+    </div>
+</md-menu>
+
+<md-menu #user_options="mdMenu" [overlapTrigger]="false">
+    <button md-menu-item (click)="logout()">
+        <md-icon> settings_power </md-icon>
+        <span> Logout </span>
+    </button>
+</md-menu>
