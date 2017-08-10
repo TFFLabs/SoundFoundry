@@ -20,11 +20,15 @@ export class Track implements Serializable<Track> {
   track_number: number;
   type: string;
   uri: string;
+  isPreviewing: boolean;
+  preview = new Audio();
 
   deserialize(input) {
     if (input) {
-      this.album = new Album().deserialize(input.album)
-      this.artists = input.artists.map(value => new Artist().deserialize(value));
+      this.album = new Album().deserialize(input.album);
+      this.artists = input.artists.map(value =>
+        new Artist().deserialize(value)
+      );
       this.available_markets = input.available_markets;
       this.disc_number = input.disc_number;
       this.duration_ms = input.duration_ms;
@@ -39,7 +43,30 @@ export class Track implements Serializable<Track> {
       this.track_number = input.track_number;
       this.type = input.type;
       this.uri = input.uri;
+      this.isPreviewing = false;
     }
     return this;
+  }
+
+  stopPreview() {
+    this.preview.pause();
+    this.isPreviewing = false;
+    this.preview = new Audio();
+  }
+
+  loadPreview() {
+    this.isPreviewing = true;
+    this.preview = new Audio(this.preview_url);
+    this.preview.load();
+  }
+
+  playPreview() {
+    this.isPreviewing = true;
+    this.preview.play();
+  }
+
+  pausePreview() {
+    this.isPreviewing = false;
+    this.preview.pause();
   }
 }

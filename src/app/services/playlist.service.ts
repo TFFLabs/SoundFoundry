@@ -5,10 +5,13 @@ import { SpotifyService } from "app/services/spotify.service";
 @Injectable()
 export class PlaylistService {
   tracks: Track[];
+  previewing: Track;
 
   constructor(
     private spotifyService: SpotifyService
-  ) {}
+  ) {
+    this.previewing = new Track();
+  }
 
   private getTracksJson() {
     return {
@@ -265,11 +268,25 @@ export class PlaylistService {
     Promise.resolve((this.tracks = this.getTracks()));
   }
 
-  addTrackToTrackList(trackId: String, token: String) {
+  addTrackToTrackList(trackId: String) {
     Promise.resolve(
       this.spotifyService.getTrack(trackId).subscribe(track => {
         this.tracks.push(new Track().deserialize(track));
       })
     );
+  }
+
+  playStopPreview(track: Track) {
+    if(!this.previewing || track.id !== this.previewing.id){
+      this.previewing.stopPreview();
+      this.previewing = track;
+      this.previewing.loadPreview();
+    }
+
+    if (this.previewing.preview.paused) {
+      this.previewing.playPreview();
+    } else {
+      this.previewing.pausePreview();
+    }
   }
 }

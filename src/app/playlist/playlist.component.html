@@ -14,8 +14,9 @@
 					{{track.album.name}}
 				</a>
 			</h4>
-			<button md-icon-button>
-				<md-icon>hearing</md-icon>
+			<button md-icon-button (click)="playStopPreview(track)">
+				<md-icon *ngIf="track.isPreviewing">visibility_off</md-icon>
+				<md-icon *ngIf="!track.isPreviewing">visibility</md-icon>
 			</button>
 			<button md-icon-button>
 				<md-icon>thumb_up</md-icon>
