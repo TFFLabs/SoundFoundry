@@ -1,30 +1,34 @@
-.home-container {
-  min-width: 100vw;
-  min-height: 100vh;
-  background-image: url('../../assets/img/foundryHome.jpg');
-  background-size: cover;
-  background-clip: border-box;
-  background-attachment: scroll;
+.canvas {
+    position: absolute;
+    left:45px; 
+    top:0;
+    right:0;
+    height: 100%;
+}
+.left_bar {
+    background: darkslategrey;
+    position:absolute;
+    top:0;
+    left:0;
+    width: 45px;
+    height: 100%;
 }
 
-.home-button {
-    background-color: #4CAF50;
-    border: none;
+.profile_image {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.devices_button {
     color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 24px;
-    border-radius: 12px;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-    margin-top: 50vh;
+    left:0;
 }
 
-.home-button:hover {
-    background-color: white; /* Green */
-    color: #4CAF50;
+.help_button {
+    color: white;
+    position:absolute;
+    bottom: 0;
+    left:0;
 }
-
-

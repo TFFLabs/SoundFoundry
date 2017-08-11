@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
+import { SpotifyService } from "app/services/spotify.service";
 
 export interface AuthorizationToken {
   value?: string,
@@ -9,7 +10,7 @@ export interface AuthorizationToken {
 @Injectable()
 export class AuthorizationService {
 
-  constructor(@Inject("AuthorizationToken") private authToken: AuthorizationToken) { }
+  constructor(@Inject("AuthorizationToken") private authToken: AuthorizationToken, private spotifyService: SpotifyService) { }
 
   login(){
     const promise = new Promise((resolve, reject) => {
@@ -21,7 +22,7 @@ export class AuthorizationService {
       var params = {
         client_id: 'd871ff65e9d94a08b33dd064cc879637',
         redirect_uri: 'http://localhost:4200/auth_callback',
-        scope: 'user-follow-modify user-follow-read playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-library-read user-library-modify user-read-private',
+        scope: 'user-read-playback-state user-follow-modify user-follow-read playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-library-read user-library-modify user-read-private',
         response_type: 'token'
       };
       var authCompleted = false;
@@ -46,7 +47,7 @@ export class AuthorizationService {
           console.log('Token: '+ e.newValue);
           this.authToken.value = e.newValue;
           window.removeEventListener('storage', storageChanged, false);
-
+          this.spotifyService.token = e.newValue;
           return resolve(e.newValue);
         }
       };

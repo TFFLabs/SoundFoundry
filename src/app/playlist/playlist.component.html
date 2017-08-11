@@ -1,10 +1,7 @@
-<div style="text-align:left; width:50%" dnd-droppable (onDropSuccess)="addSong($event)">
+<div style="text-align:left; width:75%; height: 100%; top:0; overflow:hidden; overflow-y:scroll" dnd-droppable (onDropSuccess)="addSong($event)">
 	<md-list>
-		<!-- remember to remove the token from this point -->
-		<h3 md-subheader mdTooltip="Token: {{token}}">Play List</h3>
 		<md-list-item *ngFor="let track of playlistService.tracks">
-			<img md-list-avatar src="{{track.album.getSmallestImage().url}}" alt="{{track.album.name}}" width="{{track.album.getSmallestImage().width}}"
-			 height="{{track.album.getSmallestImage().height}}" />
+			<img md-list-avatar src="{{track.album.getSmallestImage().url}}" alt="{{track.album.name}}" />
 			<h3 md-line> {{track.name}}</h3>
 			<h4 md-line>
 				<a class="playlist-artist" mdTooltip="Artists">
@@ -17,6 +14,10 @@
 					{{track.album.name}}
 				</a>
 			</h4>
+			<button md-icon-button (click)="playStopPreview(track)">
+				<md-icon *ngIf="track.isPreviewing">visibility_off</md-icon>
+				<md-icon *ngIf="!track.isPreviewing">visibility</md-icon>
+			</button>
 			<button md-icon-button>
 				<md-icon>thumb_up</md-icon>
 			</button>

@@ -1,12 +1,17 @@
 import { Injectable } from "@angular/core";
 import { Track } from "../models/track";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { SpotifyService } from "app/services/spotify.service";
 
 @Injectable()
 export class PlaylistService {
   tracks: Track[];
+  previewing: Track;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private spotifyService: SpotifyService
+  ) {
+    this.previewing = new Track();
+  }
 
   private getTracksJson() {
     return {
@@ -259,19 +264,29 @@ export class PlaylistService {
     });
   }
 
-  getCurrentPlayList() {
-    Promise.resolve(this.tracks = this.getTracks());
+  loadCurrentPlayList() {
+    Promise.resolve((this.tracks = this.getTracks()));
   }
 
-  addTrackToTrackList(trackId: String, token: String) {
-    const url = "https://api.spotify.com/v1/tracks/" + trackId;
-    const reqHeaders = new HttpHeaders({ Authorization: "Bearer " + token });
+  addTrackToTrackList(trackId: String) {
     Promise.resolve(
-      this.http.get(url, { headers: reqHeaders }).subscribe(
-        track => {
-          this.tracks.push(new Track().deserialize(track));
-        }
-      )
+      this.spotifyService.getTrack(trackId).subscribe(track => {
+        this.tracks.push(new Track().deserialize(track));
+      })
     );
+  }
+
+  playStopPreview(track: Track) {
+    if(!this.previewing || track.id !== this.previewing.id){
+      this.previewing.stopPreview();
+      this.previewing = track;
+      this.previewing.loadPreview();
+    }
+
+    if (this.previewing.preview.paused) {
+      this.previewing.playPreview();
+    } else {
+      this.previewing.pausePreview();
+    }
   }
 }

@@ -1,34 +1,23 @@
-import { Component, OnInit, Inject, ForwardRefFn, forwardRef } from '@angular/core';
-import { AuthorizationService } from '../authorization.service';
-import { Router } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import { UserService } from "app/services/user.service";
+import { SpotifyService } from "app/services/spotify.service";
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  selector: "app-home",
+  templateUrl: "./home.component.html",
+  styleUrls: ["./home.component.css"]
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private router: Router, private authorizationService: AuthorizationService) { }
+  constructor(private userService:UserService, private spotifyService: SpotifyService) {}
 
   ngOnInit() {
+    this.userService.loadUser();
+    this.userService.loadUserDevices();
   }
 
-  login(){
-    const authtoken = localStorage.getItem('foundry-spotify-token');
-    console.log(authtoken);
-    if (!authtoken && authtoken != 'null'){
-      this.authorizationService.login().subscribe(
-              token => {
-                  console.log(token);
-                  this.router.navigate(['/playlist']);
-              },
-              err => console.error(err),
-              () => { });
-    } else{
-      console.log(authtoken);
-      this.router.navigate(['/playlist']);
-    }
+  public logout(){
+    this.spotifyService.token = null;
+    localStorage.setItem("foundry-spotify-token", null);
   }
-
 }
