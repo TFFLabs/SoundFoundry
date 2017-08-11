@@ -264,7 +264,7 @@ export class PlaylistService {
     });
   }
 
-  getCurrentPlayList() {
+  loadCurrentPlayList() {
     Promise.resolve((this.tracks = this.getTracks()));
   }
 

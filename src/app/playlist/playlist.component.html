@@ -1,5 +1,5 @@
 <div style="text-align:left; width:75%; height: 100%; top:0; overflow:hidden; overflow-y:scroll" dnd-droppable (onDropSuccess)="addSong($event)">
-	<md-list style="height: 100%">
+	<md-list>
 		<md-list-item *ngFor="let track of playlistService.tracks">
 			<img md-list-avatar src="{{track.album.getSmallestImage().url}}" alt="{{track.album.name}}" />
 			<h3 md-line> {{track.name}}</h3>

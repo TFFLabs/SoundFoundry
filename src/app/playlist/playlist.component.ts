@@ -15,14 +15,14 @@ export class PlaylistComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.playlistService.getCurrentPlayList();
+    this.playlistService.loadCurrentPlayList();
   }
 
   addSong($event) {
     const songUrls: string = $event.mouseEvent.dataTransfer.getData(
       "text/plain"
     );
-    
+
     songUrls.split("\n").map(songUrl => {
       const songId: string = songUrl.substr(songUrl.lastIndexOf("/") + 1);
       if (songId) {

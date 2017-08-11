@@ -12,8 +12,8 @@ export class HomeComponent implements OnInit {
   constructor(private userService:UserService, private spotifyService: SpotifyService) {}
 
   ngOnInit() {
-    this.userService.getUser();
-    this.userService.getUserDevices();
+    this.userService.loadUser();
+    this.userService.loadUserDevices();
   }
 
   public logout(){

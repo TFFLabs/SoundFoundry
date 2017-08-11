@@ -9,11 +9,11 @@ export class UserService {
   user: User = new User();
 
   constructor(private spotifyService: SpotifyService) {
-    this.getUser();
-    this.getUserDevices();
+    this.loadUser();
+    this.loadUserDevices();
   }
 
-  public getUser() {
+  public loadUser() {
     Promise.resolve(
       this.spotifyService.getUser().subscribe(user => {
         this.user = new User().deserialize(user);
@@ -21,7 +21,7 @@ export class UserService {
     );
   }
 
-  public getUserDevices() {
+  public loadUserDevices() {
     Promise.resolve(
       this.spotifyService.getUserDevices().subscribe(devices => {
         this.devices = new Devices().deserialize(devices);
