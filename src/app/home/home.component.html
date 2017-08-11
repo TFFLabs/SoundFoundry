@@ -2,7 +2,7 @@
     <button md-icon-button [mdMenuTriggerFor]="user_options">
         <img *ngIf="userService.user.images" src="{{userService.user.thumbnail_small.url}}" alt="{{userService.user.display_name}}" class="profile_image"/>
     </button>
-    <button md-icon-button class="devices_button" [mdMenuTriggerFor]="devices_list" (click)="userService.getUserDevices()">
+    <button md-icon-button class="devices_button" [mdMenuTriggerFor]="devices_list" (click)="userService.loadUserDevices()">
         <md-icon>devices</md-icon>
     </button>
     <button md-icon-button class="help_button">

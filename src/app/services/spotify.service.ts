@@ -1,19 +1,17 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs/Observable";
+import { Session } from "app/services/session.service";
 
 @Injectable()
 export class SpotifyService {
-  token: string;
   baseUrl: string = "https://api.spotify.com/";
-
-  constructor(private http: HttpClient) {
-    this.token = localStorage.getItem("foundry-spotify-token");
+  constructor(private http: HttpClient, private session: Session) {
   }
 
   private getAuthorizationHeader() {
     return {
-      headers: new HttpHeaders({ Authorization: "Bearer " + this.token })
+      headers: new HttpHeaders({ Authorization: "Bearer " + this.session.token })
     };
   }
 

@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { SpotifyService } from "app/services/spotify.service";
+import { Session } from "app/services/session.service";
 
 export interface AuthorizationToken {
   value?: string,
@@ -10,7 +11,7 @@ export interface AuthorizationToken {
 @Injectable()
 export class AuthorizationService {
 
-  constructor(@Inject("AuthorizationToken") private authToken: AuthorizationToken, private spotifyService: SpotifyService) { }
+  constructor(@Inject("AuthorizationToken") private authToken: AuthorizationToken, private session: Session, private spotifyService: SpotifyService) { }
 
   login(){
     const promise = new Promise((resolve, reject) => {
@@ -44,10 +45,9 @@ export class AuthorizationService {
             authWindow.close();
           }
           authCompleted = true;
-          console.log('Token: '+ e.newValue);
           this.authToken.value = e.newValue;
           window.removeEventListener('storage', storageChanged, false);
-          this.spotifyService.token = e.newValue;
+          this.session.token = e.newValue;
           return resolve(e.newValue);
         }
       };
