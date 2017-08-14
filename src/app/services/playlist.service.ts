@@ -1,283 +1,54 @@
 import { Injectable } from "@angular/core";
 import { Track } from "../models/track";
 import { SpotifyService } from "app/services/spotify.service";
+import { DomSanitizer } from "@angular/platform-browser";
+import { User } from "app/models/user";
+import { UserService } from "app/services/user.service";
 
 @Injectable()
 export class PlaylistService {
+  isPlaying: boolean;
+  isProgressing: boolean;
+  currentlyPlaying: Track;
   tracks: Track[];
   previewing: Track;
+  QUEUE_SIZE: number = 10;
 
   constructor(
-    private spotifyService: SpotifyService
+    private spotifyService: SpotifyService,
+    private userService: UserService
   ) {
     this.previewing = new Track();
-  }
-
-  private getTracksJson() {
-    return {
-      tracks: [
-        {
-          album: {
-            album_type: "album",
-            artists: [
-              {
-                external_urls: {
-                  spotify:
-                    "https://open.spotify.com/artist/12Chz98pHFMPJEknJQMWvI"
-                },
-                href:
-                  "https://api.spotify.com/v1/artists/12Chz98pHFMPJEknJQMWvI",
-                id: "12Chz98pHFMPJEknJQMWvI",
-                name: "Muse",
-                type: "artist",
-                uri: "spotify:artist:12Chz98pHFMPJEknJQMWvI"
-              }
-            ],
-            external_urls: {
-              spotify: "https://open.spotify.com/album/0lw68yx3MhKflWFqCsGkIs"
-            },
-            href: "https://api.spotify.com/v1/albums/0lw68yx3MhKflWFqCsGkIs",
-            id: "0lw68yx3MhKflWFqCsGkIs",
-            images: [
-              {
-                height: 640,
-                url:
-                  "https://i.scdn.co/image/9e5288926fadb82f873ccf2b45300c3a6f65fa14",
-                width: 640
-              },
-              {
-                height: 300,
-                url:
-                  "https://i.scdn.co/image/f1cad0d6974d6236abd07a59106e8450d85cae24",
-                width: 300
-              },
-              {
-                height: 64,
-                url:
-                  "https://i.scdn.co/image/81a3f82578dc938c53efdcb405f6a3d3ebbf009f",
-                width: 64
-              }
-            ],
-            name: "Black Holes And Revelations (Updated 09 version)",
-            type: "album",
-            uri: "spotify:album:0lw68yx3MhKflWFqCsGkIs"
-          },
-          artists: [
-            {
-              external_urls: {
-                spotify:
-                  "https://open.spotify.com/artist/12Chz98pHFMPJEknJQMWvI"
-              },
-              href: "https://api.spotify.com/v1/artists/12Chz98pHFMPJEknJQMWvI",
-              id: "12Chz98pHFMPJEknJQMWvI",
-              name: "Muse",
-              type: "artist",
-              uri: "spotify:artist:12Chz98pHFMPJEknJQMWvI"
-            }
-          ],
-          disc_number: 1,
-          duration_ms: 366213,
-          explicit: false,
-          external_ids: {
-            isrc: "GBAHT0500600"
-          },
-          external_urls: {
-            spotify: "https://open.spotify.com/track/7ouMYWpwJ422jRcDASZB7P"
-          },
-          href: "https://api.spotify.com/v1/tracks/7ouMYWpwJ422jRcDASZB7P",
-          id: "7ouMYWpwJ422jRcDASZB7P",
-          is_playable: true,
-          name: "Knights Of Cydonia",
-          popularity: 67,
-          preview_url:
-            "https://p.scdn.co/mp3-preview/d7624ec5f93b6d92c1836a95c40ecce463584f6e?cid=8897482848704f2a8f8d7c79726a70d4",
-          track_number: 11,
-          type: "track",
-          uri: "spotify:track:7ouMYWpwJ422jRcDASZB7P"
-        },
-        {
-          album: {
-            album_type: "album",
-            artists: [
-              {
-                external_urls: {
-                  spotify:
-                    "https://open.spotify.com/artist/12Chz98pHFMPJEknJQMWvI"
-                },
-                href:
-                  "https://api.spotify.com/v1/artists/12Chz98pHFMPJEknJQMWvI",
-                id: "12Chz98pHFMPJEknJQMWvI",
-                name: "Muse",
-                type: "artist",
-                uri: "spotify:artist:12Chz98pHFMPJEknJQMWvI"
-              }
-            ],
-            external_urls: {
-              spotify: "https://open.spotify.com/album/0eFHYz8NmK75zSplL5qlfM"
-            },
-            href: "https://api.spotify.com/v1/albums/0eFHYz8NmK75zSplL5qlfM",
-            id: "0eFHYz8NmK75zSplL5qlfM",
-            images: [
-              {
-                height: 640,
-                url:
-                  "https://i.scdn.co/image/6e1be3ceda70250c701caee5a16bef205e94bc98",
-                width: 640
-              },
-              {
-                height: 300,
-                url:
-                  "https://i.scdn.co/image/28752dcf4b27ba14c1fc62f04ff469aa53c113d7",
-                width: 300
-              },
-              {
-                height: 64,
-                url:
-                  "https://i.scdn.co/image/26098aaa50a3450f0bac8f1a7d7677accf3f3cb6",
-                width: 64
-              }
-            ],
-            name: "The Resistance",
-            type: "album",
-            uri: "spotify:album:0eFHYz8NmK75zSplL5qlfM"
-          },
-          artists: [
-            {
-              external_urls: {
-                spotify:
-                  "https://open.spotify.com/artist/12Chz98pHFMPJEknJQMWvI"
-              },
-              href: "https://api.spotify.com/v1/artists/12Chz98pHFMPJEknJQMWvI",
-              id: "12Chz98pHFMPJEknJQMWvI",
-              name: "Muse",
-              type: "artist",
-              uri: "spotify:artist:12Chz98pHFMPJEknJQMWvI"
-            }
-          ],
-          disc_number: 1,
-          duration_ms: 304840,
-          explicit: false,
-          external_ids: {
-            isrc: "GBAHT0900320"
-          },
-          external_urls: {
-            spotify: "https://open.spotify.com/track/4VqPOruhp5EdPBeR92t6lQ"
-          },
-          href: "https://api.spotify.com/v1/tracks/4VqPOruhp5EdPBeR92t6lQ",
-          id: "4VqPOruhp5EdPBeR92t6lQ",
-          is_playable: true,
-          name: "Uprising",
-          popularity: 74,
-          preview_url:
-            "https://p.scdn.co/mp3-preview/104ad0ea32356b9f3b2e95a8610f504c90b0026b?cid=8897482848704f2a8f8d7c79726a70d4",
-          track_number: 1,
-          type: "track",
-          uri: "spotify:track:4VqPOruhp5EdPBeR92t6lQ"
-        },
-        {
-          album: {
-            album_type: "album",
-            artists: [
-              {
-                external_urls: {
-                  spotify:
-                    "https://open.spotify.com/artist/12Chz98pHFMPJEknJQMWvI"
-                },
-                href:
-                  "https://api.spotify.com/v1/artists/12Chz98pHFMPJEknJQMWvI",
-                id: "12Chz98pHFMPJEknJQMWvI",
-                name: "Muse",
-                type: "artist",
-                uri: "spotify:artist:12Chz98pHFMPJEknJQMWvI"
-              }
-            ],
-            external_urls: {
-              spotify: "https://open.spotify.com/album/0HcHPBu9aaF1MxOiZmUQTl"
-            },
-            href: "https://api.spotify.com/v1/albums/0HcHPBu9aaF1MxOiZmUQTl",
-            id: "0HcHPBu9aaF1MxOiZmUQTl",
-            images: [
-              {
-                height: 640,
-                url:
-                  "https://i.scdn.co/image/ae61915fc3f4b3019200ba6ee58a2a85866461bf",
-                width: 640
-              },
-              {
-                height: 300,
-                url:
-                  "https://i.scdn.co/image/523194c8f4f32d0d091a7686fea8fda0411b25a5",
-                width: 300
-              },
-              {
-                height: 64,
-                url:
-                  "https://i.scdn.co/image/700cdaab602da14c4f007ad2f9cefcbd9292ac24",
-                width: 64
-              }
-            ],
-            name: "Absolution (New 09 version)",
-            type: "album",
-            uri: "spotify:album:0HcHPBu9aaF1MxOiZmUQTl"
-          },
-          artists: [
-            {
-              external_urls: {
-                spotify:
-                  "https://open.spotify.com/artist/12Chz98pHFMPJEknJQMWvI"
-              },
-              href: "https://api.spotify.com/v1/artists/12Chz98pHFMPJEknJQMWvI",
-              id: "12Chz98pHFMPJEknJQMWvI",
-              name: "Muse",
-              type: "artist",
-              uri: "spotify:artist:12Chz98pHFMPJEknJQMWvI"
-            }
-          ],
-          disc_number: 1,
-          duration_ms: 237039,
-          explicit: false,
-          external_ids: {
-            isrc: "GBCVT0300078"
-          },
-          external_urls: {
-            spotify: "https://open.spotify.com/track/2takcwOaAZWiXQijPHIx7B"
-          },
-          href: "https://api.spotify.com/v1/tracks/2takcwOaAZWiXQijPHIx7B",
-          id: "2takcwOaAZWiXQijPHIx7B",
-          is_playable: true,
-          name: "Time Is Running Out",
-          popularity: 66,
-          preview_url:
-            "https://p.scdn.co/mp3-preview/b326e03624cb098d8387e17aa46669edac0d025a?cid=8897482848704f2a8f8d7c79726a70d4",
-          track_number: 3,
-          type: "track",
-          uri: "spotify:track:2takcwOaAZWiXQijPHIx7B"
-        }
-      ]
-    };
+    this.loadCurrentPlayList();
+    this.loadNextSongs();
   }
 
   private getTracks() {
-    const json = this.getTracksJson();
-    return json.tracks.map(function(value) {
-      return new Track().deserialize(value);
-    });
+    return [];
   }
 
   loadCurrentPlayList() {
-    Promise.resolve((this.tracks = this.getTracks()));
+    Promise.resolve(this.tracks = this.getTracks());
   }
 
   addTrackToTrackList(trackId: String) {
     Promise.resolve(
       this.spotifyService.getTrack(trackId).subscribe(track => {
-        this.tracks.push(new Track().deserialize(track));
+        var newtrack = new Track().deserialize(track);
+        newtrack.upVote(this.userService.user);
+        this.tracks.push(newtrack);
+        if (this.currentlyPlaying) {
+          this.sortTracks();
+        } else {
+          this.loadNextSongs();
+          this.playCurrentSong();
+        }
       })
     );
   }
 
   playStopPreview(track: Track) {
-    if(!this.previewing || track.id !== this.previewing.id){
+    if (!this.previewing || track.id !== this.previewing.id) {
       this.previewing.stopPreview();
       this.previewing = track;
       this.previewing.loadPreview();
@@ -288,5 +59,80 @@ export class PlaylistService {
     } else {
       this.previewing.pausePreview();
     }
+  }
+
+  private loadNextSongs() {
+    let tracksList: string[];
+    if (this.tracks.length > 0) {
+      tracksList = this.tracks
+        .slice(0, this.QUEUE_SIZE)
+        .reduce((prev, curr) => [...prev, curr.id], []);
+      this.currentlyPlaying = this.tracks[0];
+      if (this.tracks.length > 0) {
+        this.tracks = this.tracks.slice(1);
+      }
+    }
+    return tracksList;
+  }
+
+  playNextSong() {
+    Promise.resolve(
+      this.spotifyService.playTracks(this.loadNextSongs()).subscribe()
+    ).then(value => this.playCurrentSong());
+  }
+
+  playCurrentSong() {
+    Promise.resolve(
+      this.spotifyService.playTrack(this.currentlyPlaying.id).subscribe()
+    )
+      .then(value =>
+        this.spotifyService
+          .updatePlay(this.currentlyPlaying.progress)
+          .subscribe()
+      )
+      .then(value => {
+        this.isPlaying = true;
+        if (!this.isProgressing) {
+          this.progress();
+        }
+      });
+  }
+
+  pauseCurrentSong() {
+    Promise.resolve(this.spotifyService.pauseTrack().subscribe()).then(
+      value => (this.isPlaying = false)
+    );
+  }
+
+  progress() {
+    const increaseAmount = 10;
+    if (this.currentlyPlaying) {
+      if (this.currentlyPlaying.progressPercentage < 100) {
+        this.isProgressing = true;
+        setTimeout(() => {
+          this.currentlyPlaying.increaseProgress(increaseAmount);
+          this.progress();
+        }, increaseAmount);
+      } else {
+        this.isProgressing = false;
+        this.playNextSong();
+      }
+    }
+  }
+
+  upVote(track: Track) {
+    track.upVote(this.userService.user);
+    this.sortTracks();
+  }
+
+  downVote(track: Track) {
+    track.downVote(this.userService.user);
+    this.sortTracks();
+  }
+
+  sortTracks() {
+    this.tracks.sort(
+      (previous, next) => next.voters.length - previous.voters.length
+    );
   }
 }
