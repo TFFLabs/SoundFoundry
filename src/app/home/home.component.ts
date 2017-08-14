@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { UserService } from "app/services/user.service";
-import { SpotifyService } from "app/services/spotify.service";
+import { Session } from "app/services/session.service";
 
 @Component({
   selector: "app-home",
@@ -9,7 +9,7 @@ import { SpotifyService } from "app/services/spotify.service";
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private userService:UserService, private spotifyService: SpotifyService) {}
+  constructor(private userService:UserService, private session: Session) {}
 
   ngOnInit() {
     this.userService.loadUser();
@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit {
   }
 
   public logout(){
-    this.spotifyService.token = null;
+    this.session.token = null;
     localStorage.setItem("foundry-spotify-token", null);
   }
 }

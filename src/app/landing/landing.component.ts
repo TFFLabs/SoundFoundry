@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { PlaylistService } from "app/services/playlist.service";
-import { SpotifyService } from "app/services/spotify.service";
+import { Session } from "app/services/session.service";
 
 @Component({
   selector: "app-landing",
@@ -9,7 +9,9 @@ import { SpotifyService } from "app/services/spotify.service";
 })
 export class LandingComponent implements OnInit {
 
-  constructor(private spotifyService:SpotifyService) {}
+  constructor(private session: Session) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.session.token = localStorage.getItem("foundry-spotify-token");
+  }
 }

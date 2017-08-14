@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthorizationService } from "../services/authorization.service";
 import { Router } from "@angular/router";
+import { Session } from "app/services/session.service";
 
 @Component({
   selector: "app-login",
@@ -10,13 +11,14 @@ import { Router } from "@angular/router";
 export class LoginComponent implements OnInit {
   constructor(
     private router: Router,
-    private authorizationService: AuthorizationService
+    private authorizationService: AuthorizationService,
+    private session: Session
   ) {}
 
   ngOnInit() {}
 
   login() {
-    const authtoken = localStorage.getItem("foundry-spotify-token");
+    const authtoken = this.session.token;
     if (!authtoken || authtoken == "null") {
       this.authorizationService.login().subscribe(
         token => {

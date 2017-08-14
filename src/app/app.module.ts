@@ -1,6 +1,6 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MdButtonModule } from "@angular/material";
 import { MdListModule } from "@angular/material";
@@ -23,6 +23,9 @@ import { LandingComponent } from "./landing/landing.component";
 import { MdSidenavModule } from "@angular/material";
 import { MdToolbarModule } from "@angular/material";
 import { MdMenuModule } from "@angular/material";
+import { ErrorInterceptor } from "./interceptors/errorInterceptor";
+import { Session } from "./services/session.service";
+import { MdSnackBarModule } from "@angular/material";
 
 @NgModule({
   declarations: [
@@ -46,6 +49,7 @@ import { MdMenuModule } from "@angular/material";
     MdSidenavModule,
     MdToolbarModule,
     MdMenuModule,
+    MdSnackBarModule,
     DndModule.forRoot()
   ],
   providers: [
@@ -58,7 +62,13 @@ import { MdMenuModule } from "@angular/material";
     },
     PlaylistService,
     SpotifyService,
-    UserService
+    UserService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true
+    },
+    Session
   ],
   bootstrap: [AppComponent]
 })
