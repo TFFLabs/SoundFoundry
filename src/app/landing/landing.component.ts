@@ -11,5 +11,7 @@ export class LandingComponent implements OnInit {
 
   constructor(private session: Session) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.session.token = localStorage.getItem("foundry-spotify-token");
+  }
 }
