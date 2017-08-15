@@ -14,15 +14,13 @@ export class PlaylistComponent implements OnInit {
     public dialog: MdDialog
   ) {}
 
-  ngOnInit() {
-    this.playlistService.loadCurrentPlayList();
-  }
+  ngOnInit() {}
 
   addSong($event) {
     const songUrls: string = $event.mouseEvent.dataTransfer.getData(
       "text/plain"
     );
-
+    
     songUrls.split("\n").map(songUrl => {
       const songId: string = songUrl.substr(songUrl.lastIndexOf("/") + 1);
       if (songId) {
@@ -33,5 +31,17 @@ export class PlaylistComponent implements OnInit {
 
   playStopPreview(track: Track) {
     this.playlistService.playStopPreview(track);
+  }
+
+  toogleVote(track: Track) {
+    if (track.upvoted) {
+      this.playlistService.downVote(track);
+    } else {
+      this.playlistService.upVote(track);
+    }
+  }
+
+  playNextSong() {
+    this.playlistService.playNextSong();
   }
 }

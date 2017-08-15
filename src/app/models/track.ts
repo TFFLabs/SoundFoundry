@@ -2,6 +2,7 @@ import { Artist } from "app/models/artist";
 import { Album } from "app/models/album";
 import { TrackLink } from "app/models/track-link";
 import { Serializable } from "app/models/serializable";
+import { User } from "app/models/user";
 
 export class Track implements Serializable<Track> {
   album: Album;
@@ -22,6 +23,10 @@ export class Track implements Serializable<Track> {
   uri: string;
   isPreviewing: boolean;
   preview = new Audio();
+  progress: number = 0;
+  progressPercentage: number = 0;
+  voters: User[] = [];
+  upvoted: boolean;
 
   deserialize(input) {
     if (input) {
@@ -68,5 +73,25 @@ export class Track implements Serializable<Track> {
   pausePreview() {
     this.isPreviewing = false;
     this.preview.pause();
+  }
+
+  increaseProgress(increaseAmount: number) {
+    this.progress += increaseAmount;
+    this.progressPercentage = parseFloat(
+      (this.progress / this.duration_ms * 100).toFixed(1)
+    );
+  }
+
+  upVote(user: User) {
+    this.voters.push(user);
+    this.upvoted = true;
+  }
+
+  downVote(user: User) {
+    var index = this.voters.indexOf(user);
+    if (index > -1) {
+      this.voters.splice(index, 1);
+    }
+    this.upvoted = false;
   }
 }

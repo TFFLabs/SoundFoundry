@@ -1,0 +1,103 @@
+.playlist-artist {
+  color: lightseagreen;
+}
+
+.playlist-album {
+  top: 0;
+  color: lightslategray;
+}
+
+.playlist-artist-album-divider {
+  color: lightslategray;
+  text-shadow: 3px 0px lightseagreen;
+}
+
+.grid {
+  width: 75%;
+}
+
+.grid:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+*,
+*:after,
+*:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+[class*='col-'] {
+  float: left;
+  padding-right: 20px;
+}
+[class*='col-']:last-of-type {
+  float: left;
+  padding-right: 0;
+}
+
+.col-image {
+  width: 10%;
+  position: relative;
+  float: left;
+  padding-right: 20px;
+}
+
+.col-song-name {
+  width: 90%;
+  text-align: start;
+  padding-right: 0 !important;
+}
+
+.grid-pad {
+  padding: 20px 0 20px 20px;
+}
+
+.grid-pad > [class*='col-']:last-of-type {
+  padding-right: 20px;
+}
+
+.image {
+  opacity: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: .5s ease;
+  backface-visibility: hidden;
+}
+
+.image-over {
+  transition: .5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  padding-right: 20px;
+}
+
+.col-image:hover .image {
+  opacity: 0.3;
+}
+
+.col-image:hover .image-over {
+  opacity: 1;
+}
+
+md-icon {
+  font-size: 60px;
+  height: 60px;
+  width: 60px;
+}
+
+.owner_img {
+  vertical-align: middle !important;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}

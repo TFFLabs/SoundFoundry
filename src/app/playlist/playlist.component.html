@@ -1,29 +1,41 @@
-<div style="text-align:left; width:75%; height: 100%; top:0; overflow:hidden; overflow-y:scroll" dnd-droppable (onDropSuccess)="addSong($event)">
-	<md-list>
-		<md-list-item *ngFor="let track of playlistService.tracks">
-			<img md-list-avatar src="{{track.album.getSmallestImage().url}}" alt="{{track.album.name}}" />
-			<h3 md-line> {{track.name}}</h3>
-			<h4 md-line>
-				<a class="playlist-artist" mdTooltip="Artists">
-					<ng-container *ngFor="let artist of track.artists">
-						{{artist.name}}
-					</ng-container>
-				</a>
-				<a class="playlist-artist-album-divider">/</a>
-				<a class="playlist-album" mdTooltip="Album">
-					{{track.album.name}}
-				</a>
-			</h4>
-			<button md-icon-button (click)="playStopPreview(track)">
-				<md-icon *ngIf="track.isPreviewing">visibility_off</md-icon>
-				<md-icon *ngIf="!track.isPreviewing">visibility</md-icon>
-			</button>
-			<button md-icon-button>
-				<md-icon>thumb_up</md-icon>
-			</button>
-			<button md-icon-button>
-				<md-icon>list</md-icon>
-			</button>
-		</md-list-item>
-	</md-list>
+<app-playbutton></app-playbutton>
+<div class="playlist-container" dnd-droppable (onDropSuccess)="addSong($event)">
+	<div *ngIf="playlistService.tracks.length >= 1" dnd-droppable (onDropSuccess)="addSong($event)">
+		<md-list *ngIf="playlistService.tracks.length >= 1">
+			<md-list-item *ngFor="let track of playlistService.tracks">
+				<img md-list-avatar src="{{track.album.getSmallestImage().url}}" alt="{{track.album.name}}" />
+				<h3 md-line> {{track.name}}</h3>
+				<h4 md-line>
+					<a class="playlist-artist" mdTooltip="Artists">
+						<ng-container *ngFor="let artist of track.artists">
+							{{artist.name}}
+						</ng-container>
+					</a>
+					<a class="playlist-artist-album-divider">/</a>
+					<a class="playlist-album" mdTooltip="Album">
+						{{track.album.name}}
+					</a>
+				</h4>
+				<h3 md-line class="votes" class="votes">
+					<img *ngIf="track.voters.length > 0" src="{{track.voters[0].getSmallestImage().url}}" mdTooltip="{{track.voters[0].display_name}}" alt="{{track.voters[0].display_name}}"
+					/>
+					<div *ngIf="track.voters.length > 1">+{{track.voters.length}}</div>
+				</h3>
+				<button md-icon-button (click)="playStopPreview(track)">
+					<md-icon *ngIf="track.isPreviewing">visibility_off</md-icon>
+					<md-icon *ngIf="!track.isPreviewing">visibility</md-icon>
+				</button>
+				<button md-icon-button (click)="toogleVote(track)">
+					<md-icon *ngIf="!track.upvoted">thumb_up</md-icon>
+					<md-icon *ngIf="track.upvoted" class="upvoted-icon">thumb_up</md-icon>
+				</button>
+				<button md-icon-button>
+					<md-icon>list</md-icon>
+				</button>
+			</md-list-item>
+		</md-list>
+	</div>
+	<div *ngIf="playlistService.tracks.length < 1" dnd-droppable (onDropSuccess)="addSong($event)" class="empty">
+		DRAG A SONG FROM SPOTIFY IN HERE!
+	</div>
 </div>
