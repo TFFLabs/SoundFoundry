@@ -31,7 +31,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           let snackBarRef = this.snackBar.open("Session expired, redirecting to login...", "",{
             duration: 1500
           });
-          snackBarRef.afterDismissed().subscribe(value => {
+          snackBarRef.afterDismissed().subscribe(() => {
             this.session.token = null;
             this.router.navigate(["/landing"]);
           });
