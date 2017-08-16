@@ -4,49 +4,59 @@ import { SpotifyService } from "app/services/spotify.service";
 import { DomSanitizer } from "@angular/platform-browser";
 import { User } from "app/models/user";
 import { UserService } from "app/services/user.service";
+import { Room } from "app/models/room";
+import { AngularFireAuth } from "angularfire2/auth";
+import {
+  AngularFireDatabase,
+  FirebaseObjectObservable
+} from "angularfire2/database";
 
 @Injectable()
 export class PlaylistService {
   isPlaying: boolean;
-  isProgressing: boolean;
-  currentlyPlaying: Track;
-  tracks: Track[];
   previewing: Track;
-  QUEUE_SIZE: number = 10;
+  room: Room;
+  roomz: FirebaseObjectObservable<Room>;
+  isProgressing: boolean;
 
   constructor(
     private spotifyService: SpotifyService,
-    private userService: UserService
+    private userService: UserService,
+    public afAuth: AngularFireAuth,
+    public af: AngularFireDatabase
   ) {
     this.previewing = new Track();
-    this.loadCurrentPlayList();
-    this.loadNextSongs();
+    this.roomz = af.object("/room/-Krb0j60wo1DSaS9Ww1x");
+    this.roomz.subscribe(d => {
+      this.room = new Room().deserialize(d);
+      if (!this.isProgressing) {
+        this.progress();
+      }
+    });
   }
 
-  private getTracks() {
-    return [];
-  }
-
-  loadCurrentPlayList() {
-    Promise.resolve(this.tracks = this.getTracks());
-  }
-
+  /**
+   * Adds a new track to the list and upvote it
+   * @param trackId 
+   */
   addTrackToTrackList(trackId: String) {
     Promise.resolve(
       this.spotifyService.getTrack(trackId).subscribe(track => {
         var newtrack = new Track().deserialize(track);
-        newtrack.upVote(this.userService.user);
-        this.tracks.push(newtrack);
-        if (this.currentlyPlaying) {
-          this.sortTracks();
-        } else {
-          this.loadNextSongs();
-          this.playCurrentSong();
+        this.room.tracks.push(newtrack);
+        this.upVote(newtrack);
+
+        if (!this.room.currentlyPlaying) {
+          this.playNextSong();
         }
       })
     );
   }
 
+  /**
+   * Loads and reproduce the preview of a track
+   * @param track 
+   */
   playStopPreview(track: Track) {
     if (!this.previewing || track.id !== this.previewing.id) {
       this.previewing.stopPreview();
@@ -61,36 +71,19 @@ export class PlaylistService {
     }
   }
 
-  private loadNextSongs() {
-    let tracksList: string[];
-    if (this.tracks.length > 0) {
-      tracksList = this.tracks
-        .slice(0, this.QUEUE_SIZE)
-        .reduce((prev, curr) => [...prev, curr.id], []);
-      this.currentlyPlaying = this.tracks[0];
-      if (this.tracks.length > 0) {
-        this.tracks = this.tracks.slice(1);
-      }
-    }
-    return tracksList;
-  }
-
-  playNextSong() {
-    Promise.resolve(
-      this.spotifyService.playTracks(this.loadNextSongs()).subscribe()
-    ).then(value => this.playCurrentSong());
-  }
-
+  /**
+   * Sends the play signal to the spotify client.
+   */
   playCurrentSong() {
     Promise.resolve(
-      this.spotifyService.playTrack(this.currentlyPlaying.id).subscribe()
+      this.spotifyService.playTrack(this.room.currentlyPlaying.id).subscribe()
     )
-      .then(value =>
+      .then(() =>
         this.spotifyService
-          .updatePlay(this.currentlyPlaying.progress)
+          .updatePlay(Math.round(this.room.currentlyPlaying.progress))
           .subscribe()
       )
-      .then(value => {
+      .then(() => {
         this.isPlaying = true;
         if (!this.isProgressing) {
           this.progress();
@@ -98,41 +91,128 @@ export class PlaylistService {
       });
   }
 
+  /**
+   * Pause the song reproduction in the client, this will not stop progress!.
+   */
   pauseCurrentSong() {
     Promise.resolve(this.spotifyService.pauseTrack().subscribe()).then(
-      value => (this.isPlaying = false)
+      () => (this.isPlaying = false)
     );
   }
 
-  progress() {
-    const increaseAmount = 10;
-    if (this.currentlyPlaying) {
-      if (this.currentlyPlaying.progressPercentage < 100) {
+  /**
+   * Fires the process counter for the process bar.
+   * [syncs to firebase]
+   */
+  private progress() {
+    const increaseAmount = 1000;
+    let syncFrequencyPercentage = 10;
+    if (this.room.currentlyPlaying) {
+      if (this.room.currentlyPlaying.progressPercentage < 100) {
         this.isProgressing = true;
         setTimeout(() => {
-          this.currentlyPlaying.increaseProgress(increaseAmount);
-          this.progress();
+          this.room.currentlyPlaying.increaseProgress(increaseAmount);
+          if (
+            this.room.currentlyPlaying.progressPercentage >
+            syncFrequencyPercentage
+          ) {
+            this.roomz
+              .update(
+                this.sanitizeObject({
+                  currentlyPlaying: this.room.currentlyPlaying
+                })
+              )
+              .then(() => this.progress());
+            syncFrequencyPercentage += syncFrequencyPercentage;
+          } else {
+            this.progress();
+          }
         }, increaseAmount);
       } else {
         this.isProgressing = false;
+        this.room.currentlyPlaying = null;
         this.playNextSong();
       }
     }
   }
 
+  /**
+   * Adds the user vote from the specified track.
+   * @param track 
+   */
   upVote(track: Track) {
     track.upVote(this.userService.user);
     this.sortTracks();
   }
 
+  /**
+   * Removes user vote from the specified track.
+   * @param track 
+   */
   downVote(track: Track) {
     track.downVote(this.userService.user);
+    if(track.voters.length <= 0){
+      this.room.tracks.splice(this.room.tracks.indexOf(track), 1);
+    }
     this.sortTracks();
   }
 
-  sortTracks() {
-    this.tracks.sort(
+  /**
+   * Sort the queue in descendant order by  votes quantity.
+   * [syncs to firebase]
+   */
+  private sortTracks() {
+    this.room.tracks.sort(
       (previous, next) => next.voters.length - previous.voters.length
     );
+    this.roomz.update(this.sanitizeObject(this.room));
+  }
+
+  /**
+   * Replace undefined values with null so that they can be save in firebase.
+   * @param value object to be sanitized
+   */
+  private sanitizeObject(value) {
+    return JSON.parse(
+      JSON.stringify(value, function(k, v) {
+        if (v === undefined) {
+          return null;
+        }
+        return v;
+      })
+    );
+  }
+
+  /**
+   * Sends the play signal to the spotify client, asign the currently playing and adjust the queue.
+   * [syncs tracks to firebase]
+   */
+  private playNextSong() {
+    if (this.room.tracks.length > 0) {
+      Promise.resolve(
+        this.spotifyService.playTracks(this.loadNextSongs()).subscribe()
+      )
+        .then(() => {
+          if (this.room.tracks.length > 0) {
+            this.room.currentlyPlaying = this.room.tracks[0];
+            this.room.tracks = this.room.tracks.slice(1);
+            this.roomz.update(this.sanitizeObject(this.room));
+          }
+        })
+        .then(() => this.playCurrentSong());
+    }
+  }
+
+  /**
+   * Returns an array containing the next songs to be sent to spotify client.
+   */
+  private loadNextSongs(): string[] {
+    let tracksList: string[] = [];
+    if (this.room.tracks.length > 0) {
+      tracksList = this.room.tracks
+        .slice(0, this.room.queueSize)
+        .reduce((prev, curr) => [...prev, curr.id], []);
+    }
+    return tracksList;
   }
 }

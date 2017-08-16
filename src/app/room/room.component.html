@@ -1,0 +1,8 @@
+<div *ngIf="!playlistService.room">
+    <md-progress-spinner style="margin:0 auto;" mode="indeterminate">
+    </md-progress-spinner>
+</div>
+<div *ngIf="playlistService.room">
+    <app-playbutton></app-playbutton>
+    <app-playlist></app-playlist>
+</div>
