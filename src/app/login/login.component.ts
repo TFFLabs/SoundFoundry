@@ -18,18 +18,30 @@ export class LoginComponent implements OnInit {
   ngOnInit() {}
 
   login() {
-    const authtoken = this.session.token;
-    if (!authtoken || authtoken == "null") {
-      this.authorizationService.login().subscribe(
-        token => {
-          console.log(token);
-          this.router.navigate(["/landing"]);
-        },
-        err => console.error(err),
-        () => {}
-      );
+    
+    if (this.isTokenNeeded()) {
+      this.startLoginFlow();
     } else {
-      this.router.navigate(["/landing"]);
+      this.navigateToLandingPage();
     }
+  }
+
+  private isTokenNeeded(){
+    const authtoken = this.session.token;
+    return !authtoken || authtoken == "null";
+  }
+
+  private startLoginFlow(){
+    this.authorizationService.login().subscribe(
+      token => {
+        this.navigateToLandingPage();
+      },
+      err => console.error(err),
+      () => {}
+    );
+  }
+
+  private navigateToLandingPage(){
+    this.router.navigate(["/landing"]);
   }
 }

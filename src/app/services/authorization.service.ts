@@ -10,71 +10,57 @@ export interface AuthorizationToken {
 
 @Injectable()
 export class AuthorizationService {
+  loginDialog : LoginDialog;
+  isAuthenticationCompleted : boolean;
+  authenticatinDialog : Window;
+  storageChangedBehavior;
 
-  constructor(@Inject("AuthorizationToken") private authToken: AuthorizationToken, private session: Session, private spotifyService: SpotifyService) { }
-
-  login(){
-    const promise = new Promise((resolve, reject) => {
-      var w = 400,
-        h = 500,
-        left = (screen.width / 2) - (w / 2),
-        top = (screen.height / 2) - (h / 2);
-
-      var params = {
-        client_id: 'd871ff65e9d94a08b33dd064cc879637',
-        redirect_uri: 'http://localhost:4200/auth_callback',
-        scope: 'user-read-playback-state user-follow-modify user-follow-read playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-library-read user-library-modify user-read-private user-modify-playback-state',
-        response_type: 'token'
-      };
-      var authCompleted = false;
-      var authWindow = this.openDialog(
-        'https://accounts.spotify.com/authorize?' + this.toQueryString(params),
-        'Spotify',
-        'menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,width=' + w + ',height=' + h + ',top=' + top + ',left=' + left,
-        () => {
-          console.log('AUTH: ' + authCompleted);
-          if (!authCompleted) {
-            return reject('Login rejected error');
-          }
-        }
-      );
-
-      var storageChanged = (e) => {
-        if (e.key === 'foundry-spotify-token') {
-          if (authWindow) {
-            authWindow.close();
-          }
-          authCompleted = true;
-          this.authToken.value = e.newValue;
-          window.removeEventListener('storage', storageChanged, false);
-          this.session.token = e.newValue;
-          return resolve(e.newValue);
-        }
-      };
-      window.addEventListener('storage', storageChanged, false);
-    });
-
-    return Observable.fromPromise(promise).catch(this.handleError);
+  constructor(@Inject("AuthorizationToken") private authToken: AuthorizationToken, private session: Session, private spotifyService: SpotifyService) { 
+    this.loginDialog  = new LoginDialog();
+    this.isAuthenticationCompleted = false;
   }
 
-  private toQueryString(obj: Object): string {
-    var parts = [];
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        parts.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+  login(){
+    const loginPromise = new Promise((resolve, reject) => {
+      this.authenticatinDialog = this.openAuthenticationDialog(reject);
+      this.storageChangedBehavior = this.getStorageChangedFunction(resolve);
+      window.addEventListener('storage', this.storageChangedBehavior, false);
+    });
+    return Observable.fromPromise(loginPromise).catch(this.handleError);
+  }
+
+  private getStorageChangedFunction(resolve) {
+    return (event) => {
+      if (event.key === 'foundry-spotify-token') {
+        if (this.authenticatinDialog) {
+          this.authenticatinDialog.close();
+        }
+        this.isAuthenticationCompleted = true;
+        this.authToken.value = event.newValue;
+        window.removeEventListener('storage', this.storageChangedBehavior, false);
+        this.session.token = event.newValue;
+        return resolve(event.newValue);
       }
     };
-    return parts.join('&');
+  }
+
+  private paramsListToQueryString(paramsList: Object): string {
+    var pathParams = [];
+    for (let key in paramsList) {
+      if (paramsList.hasOwnProperty(key)) {
+        pathParams.push(encodeURIComponent(key) + '=' + encodeURIComponent(paramsList[key]));
+      }
+    };
+    return pathParams.join('&');
   };
 
-  private openDialog(uri, name, options, cb) {
-    console.log(uri);
-    var win = window.open(uri, name, options);
+  private openAuthenticationDialog(reject) {
+    var win = window.open(this.loginDialog.url + this.paramsListToQueryString(this.loginDialog.params), this.loginDialog.name, this.loginDialog.options);
     var interval = window.setInterval(() => {
       try {
         if (!win || win.closed) {
           window.clearInterval(interval);
-          cb(win);
+          this.loginDialog.callReject(reject, this.isAuthenticationCompleted);
         }
       } catch (e) { }
     }, 1000000);
@@ -87,4 +73,28 @@ export class AuthorizationService {
   }
 
 
+}
+ 
+class LoginDialog {
+  w = 400;
+  h = 500;
+  left = (screen.width / 2) - (200); //Dialog widht is 400
+  top = (screen.height / 2) - (250); //Dialog height is 500
+
+  params = {
+    client_id: 'd871ff65e9d94a08b33dd064cc879637',
+    redirect_uri: 'http://localhost:4200/auth_callback',
+    scope: 'user-read-playback-state user-follow-modify user-follow-read playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-library-read user-library-modify user-read-private user-modify-playback-state',
+    response_type: 'token'
+  };
+
+  url = 'https://accounts.spotify.com/authorize?';
+  name = 'Spotify';
+  options = 'menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,width=' + this.w + ',height=' + this.h + ',top=' + this.top + ',left=' + this.left;
+  
+  callReject(reject, authCompleted) {
+    if (!authCompleted){
+      return reject('Login rejected error');
+    }
+  }
 }
