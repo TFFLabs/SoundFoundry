@@ -130,8 +130,7 @@ export class PlaylistService {
         }, increaseAmount);
       } else {
         this.room.tracks = this.room.tracks.slice(1);
-        this.roomz
-          .update(this.sanitizeObject(this.room));
+        this.roomz.update(this.sanitizeObject(this.room));
         this.isProgressing = false;
         this.playNextSong();
       }
@@ -166,9 +165,15 @@ export class PlaylistService {
    * [syncs to firebase]
    */
   private sortTracks() {
-    this.room.tracks.sort(
-      (previous, next) => next.voters.length - previous.voters.length
-    );
+    if (this.room.tracks.length > 1) {
+      var sortingAux: Track[] = [];
+      sortingAux.push(this.room.tracks[0]);
+      this.room.tracks = sortingAux.concat(
+        this.room.tracks
+          .slice(1)
+          .sort((previous, next) => next.voters.length - previous.voters.length)
+      );
+    }
     this.roomz.update(this.sanitizeObject(this.room));
   }
 
@@ -197,7 +202,9 @@ export class PlaylistService {
         this.spotifyService.playTracks(this.loadNextSongs()).subscribe()
       )
         .then(() => {
-          var shallSync = this.currentlyPlayingId ? this.currentlyPlayingId == this.room.tracks[0].id : !this.currentlyPlayingId;
+          var shallSync = this.currentlyPlayingId
+            ? this.currentlyPlayingId == this.room.tracks[0].id
+            : !this.currentlyPlayingId;
           if (shallSync) {
             this.currentlyPlayingId =
               this.room.tracks.length > 0 ? this.room.tracks[0].id : null;
