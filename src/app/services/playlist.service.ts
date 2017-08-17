@@ -18,6 +18,8 @@ export class PlaylistService {
   room: Room;
   roomz: FirebaseObjectObservable<Room>;
   isProgressing: boolean;
+  currentlyPlayingId: string;
+  isFirstLoad: boolean; //ugly aproach potential to refactor with observables
 
   constructor(
     private spotifyService: SpotifyService,
@@ -25,11 +27,17 @@ export class PlaylistService {
     public afAuth: AngularFireAuth,
     public af: AngularFireDatabase
   ) {
+    this.isFirstLoad = true;
     this.previewing = new Track();
-    this.roomz = af.object("/room/-Krb0j60wo1DSaS9Ww1x");
+    this.subscribeRoom();
+  }
+
+  private subscribeRoom() {
+    this.roomz = this.af.object("/room/-Krb0j60wo1DSaS9Ww1x");
     this.roomz.subscribe(d => {
       this.room = new Room().deserialize(d);
-      if (!this.isProgressing) {
+      if (this.isFirstLoad) {
+        this.isFirstLoad = false;
         this.progress();
       }
     });
@@ -46,7 +54,8 @@ export class PlaylistService {
         this.room.tracks.push(newtrack);
         this.upVote(newtrack);
 
-        if (!this.room.currentlyPlaying) {
+        //If there is nothing being played, then play the next song (this one).
+        if (!this.currentlyPlayingId) {
           this.playNextSong();
         }
       })
@@ -55,6 +64,7 @@ export class PlaylistService {
 
   /**
    * Loads and reproduce the preview of a track
+   * [syncs to firebase]
    * @param track 
    */
   playStopPreview(track: Track) {
@@ -75,20 +85,22 @@ export class PlaylistService {
    * Sends the play signal to the spotify client.
    */
   playCurrentSong() {
-    Promise.resolve(
-      this.spotifyService.playTrack(this.room.currentlyPlaying.id).subscribe()
-    )
-      .then(() =>
-        this.spotifyService
-          .updatePlay(Math.round(this.room.currentlyPlaying.progress))
-          .subscribe()
+    if (this.currentlyPlayingId) {
+      Promise.resolve(
+        this.spotifyService.playTrack(this.room.tracks[0].id).subscribe()
       )
-      .then(() => {
-        this.isPlaying = true;
-        if (!this.isProgressing) {
-          this.progress();
-        }
-      });
+        .then(() =>
+          this.spotifyService
+            .updatePlay(Math.round(this.room.tracks[0].progress))
+            .subscribe()
+        )
+        .then(() => {
+          this.isPlaying = true;
+          if (!this.isProgressing) {
+            this.progress();
+          }
+        });
+    }
   }
 
   /**
@@ -106,33 +118,25 @@ export class PlaylistService {
    */
   private progress() {
     const increaseAmount = 1000;
-    let syncFrequencyPercentage = 10;
-    if (this.room.currentlyPlaying) {
-      if (this.room.currentlyPlaying.progressPercentage < 100) {
+
+    if (this.room.tracks[0]) {
+      if (this.room.tracks[0].progressPercentage < 100) {
         this.isProgressing = true;
         setTimeout(() => {
-          this.room.currentlyPlaying.increaseProgress(increaseAmount);
-          if (
-            this.room.currentlyPlaying.progressPercentage >
-            syncFrequencyPercentage
-          ) {
-            this.roomz
-              .update(
-                this.sanitizeObject({
-                  currentlyPlaying: this.room.currentlyPlaying
-                })
-              )
-              .then(() => this.progress());
-            syncFrequencyPercentage += syncFrequencyPercentage;
-          } else {
-            this.progress();
-          }
+          this.room.tracks[0].increaseProgress(increaseAmount);
+          this.roomz
+            .update(this.sanitizeObject(this.room))
+            .then(() => this.progress());
         }, increaseAmount);
       } else {
+        this.room.tracks = this.room.tracks.slice(1);
+        this.roomz
+          .update(this.sanitizeObject(this.room));
         this.isProgressing = false;
-        this.room.currentlyPlaying = null;
         this.playNextSong();
       }
+    } else {
+      this.playNextSong();
     }
   }
 
@@ -151,7 +155,7 @@ export class PlaylistService {
    */
   downVote(track: Track) {
     track.downVote(this.userService.user);
-    if(track.voters.length <= 0){
+    if (track.voters.length <= 0) {
       this.room.tracks.splice(this.room.tracks.indexOf(track), 1);
     }
     this.sortTracks();
@@ -193,13 +197,20 @@ export class PlaylistService {
         this.spotifyService.playTracks(this.loadNextSongs()).subscribe()
       )
         .then(() => {
-          if (this.room.tracks.length > 0) {
-            this.room.currentlyPlaying = this.room.tracks[0];
-            this.room.tracks = this.room.tracks.slice(1);
+          var shallSync = this.currentlyPlayingId ? this.currentlyPlayingId == this.room.tracks[0].id : !this.currentlyPlayingId;
+          if (shallSync) {
+            this.currentlyPlayingId =
+              this.room.tracks.length > 0 ? this.room.tracks[0].id : null;
             this.roomz.update(this.sanitizeObject(this.room));
+          } else {
+            this.currentlyPlayingId = this.room.tracks[0].id;
           }
         })
-        .then(() => this.playCurrentSong());
+        .then(() => {
+          this.playCurrentSong();
+        });
+    } else {
+      this.currentlyPlayingId = null;
     }
   }
 
@@ -208,9 +219,9 @@ export class PlaylistService {
    */
   private loadNextSongs(): string[] {
     let tracksList: string[] = [];
-    if (this.room.tracks.length > 0) {
+    if (this.room.tracks.length > 1) {
       tracksList = this.room.tracks
-        .slice(0, this.room.queueSize)
+        .slice(1, this.room.queueSize)
         .reduce((prev, curr) => [...prev, curr.id], []);
     }
     return tracksList;

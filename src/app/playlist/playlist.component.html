@@ -1,7 +1,7 @@
 <div class="playlist-container" dnd-droppable (onDropSuccess)="addSong($event)">
 	<div *ngIf="playlistService.room.tracks.length >= 1" dnd-droppable (onDropSuccess)="addSong($event)">
 		<md-list *ngIf="playlistService.room.tracks.length >= 1">
-			<md-list-item *ngFor="let track of playlistService.room.tracks">
+			<md-list-item *ngFor="let track of playlistService.room.tracks.slice(1)">
 				<img md-list-avatar src="{{track.album.getSmallestImage().url}}" alt="{{track.album.name}}" />
 				<h3 md-line> {{track.name}}</h3>
 				<h4 md-line>
@@ -21,8 +21,8 @@
 					<div *ngIf="track.voters.length > 1">+{{track.voters.length - 1}}</div>
 				</h3>
 				<button md-icon-button (click)="playStopPreview(track)">
-					<md-icon *ngIf="track.isPreviewing">visibility_off</md-icon>
-					<md-icon *ngIf="!track.isPreviewing">visibility</md-icon>
+					<md-icon *ngIf="(playlistService.previewing.id == track.id && playlistService.previewing.isPreviewing)">visibility_off</md-icon>
+					<md-icon *ngIf="(playlistService.previewing.id == track.id && !playlistService.previewing.isPreviewing) || playlistService.previewing.id != track.id">visibility</md-icon>
 				</button>
 				<button md-icon-button (click)="toogleVote(track)">
 					<md-icon *ngIf="!track.isUpvoted(userService.user)">thumb_up</md-icon>
