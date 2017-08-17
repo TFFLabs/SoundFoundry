@@ -21,8 +21,8 @@
 					<div *ngIf="track.voters.length > 1">+{{track.voters.length - 1}}</div>
 				</h3>
 				<button md-icon-button (click)="playStopPreview(track)">
-					<md-icon *ngIf="(playlistService.previewing.id == track.id && playlistService.previewing.isPreviewing)">visibility_off</md-icon>
-					<md-icon *ngIf="(playlistService.previewing.id == track.id && !playlistService.previewing.isPreviewing) || playlistService.previewing.id != track.id">visibility</md-icon>
+					<md-icon *ngIf="(playlistService.previewing.id === track.id && playlistService.previewing.isPreviewing)">visibility_off</md-icon>
+					<md-icon *ngIf="(playlistService.previewing.id === track.id && !playlistService.previewing.isPreviewing) || playlistService.previewing.id !== track.id">visibility</md-icon>
 				</button>
 				<button md-icon-button (click)="toogleVote(track)">
 					<md-icon *ngIf="!track.isUpvoted(userService.user)">thumb_up</md-icon>

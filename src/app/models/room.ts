@@ -15,7 +15,7 @@ export class Room implements Serializable<Room> {
     if (input) {
       this.name = input.name;
       this.isPlaying = input.isPlaying;
-      this.tracks = input.tracks?input.tracks.map(value => new Track().deserialize(value)):this.tracks = [];
+      this.tracks = input.tracks?input.tracks.map(value => new Track().deserialize(value)): [];
       this.queueSize = input.queueSize;
     }
     return this;

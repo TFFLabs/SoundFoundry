@@ -89,13 +89,13 @@ export class Track implements Serializable<Track> {
   }
 
   downVote(user: User) {
-    var index = this.voters.indexOf(this.voters.find(val => val.id == user.id));
+    var index = this.voters.indexOf(this.voters.find(val => val.id === user.id));
     if (index > -1) {
       this.voters.splice(index, 1);
     }
   }
 
   isUpvoted(user: User): boolean {
-    return this.voters ? this.voters.filter(val  => val.id == user.id ).length > 0: false;
+    return this.voters ? this.voters.filter(val  => val.id === user.id ).length > 0: false;
   }
 }

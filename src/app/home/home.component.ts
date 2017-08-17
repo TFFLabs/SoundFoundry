@@ -2,10 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { UserService } from "app/services/user.service";
 import { Session } from "app/services/session.service";
 
-import {
-  AngularFireDatabase,
-  FirebaseListObservable
-} from "angularfire2/database";
+import { AngularFireDatabase } from "angularfire2/database";
 import { AngularFireAuth } from "angularfire2/auth";
 import { Observable } from "rxjs/Observable";
 import * as firebase from "firebase/app";
@@ -17,7 +14,6 @@ import * as firebase from "firebase/app";
 })
 export class HomeComponent implements OnInit {
   user: Observable<firebase.User>;
-  items: FirebaseListObservable<any[]>;
 
   constructor(
     private userService: UserService,
@@ -27,10 +23,6 @@ export class HomeComponent implements OnInit {
     this.user = this.afAuth.authState;
     this.afAuth.auth.signInAnonymously();
   }
-  Send(desc: string) {
-    this.items.push({ message: desc });
-  }
-
   ngOnInit() {
     this.userService.loadUser();
     this.userService.loadUserDevices();
