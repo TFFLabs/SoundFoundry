@@ -83,7 +83,8 @@ class LoginDialog {
 
   params = {
     client_id: 'd871ff65e9d94a08b33dd064cc879637',
-    redirect_uri: 'http://localhost:4200/auth_callback',
+    redirect_uri: 'http://soundfoundry.herokuapp.com/auth_callback',
+    //redirect_uri: 'http://localhost:4200/auth_callback',
     scope: 'user-read-playback-state user-follow-modify user-follow-read playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-library-read user-library-modify user-read-private user-modify-playback-state',
     response_type: 'token'
   };

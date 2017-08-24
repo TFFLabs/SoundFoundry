@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Track } from "app/models/track";
 import { PlaylistService } from "app/services/playlist.service";
 import { MdDialog } from "@angular/material";
+import { UserService } from "app/services/user.service";
 
 @Component({
   selector: "app-playlist",
@@ -11,6 +12,7 @@ import { MdDialog } from "@angular/material";
 export class PlaylistComponent implements OnInit {
   constructor(
     private playlistService: PlaylistService,
+    private userService: UserService,
     public dialog: MdDialog
   ) {}
 
@@ -34,14 +36,10 @@ export class PlaylistComponent implements OnInit {
   }
 
   toogleVote(track: Track) {
-    if (track.upvoted) {
+    if (track.isUpvoted(this.userService.user)) {
       this.playlistService.downVote(track);
     } else {
       this.playlistService.upVote(track);
     }
-  }
-
-  playNextSong() {
-    this.playlistService.playNextSong();
   }
 }

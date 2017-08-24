@@ -26,7 +26,6 @@ export class Track implements Serializable<Track> {
   progress: number = 0;
   progressPercentage: number = 0;
   voters: User[] = [];
-  upvoted: boolean;
 
   deserialize(input) {
     if (input) {
@@ -49,6 +48,9 @@ export class Track implements Serializable<Track> {
       this.type = input.type;
       this.uri = input.uri;
       this.isPreviewing = false;
+      this.progress = input.progress? input.progress : 0;
+      this.progressPercentage = input.progressPercentage? input.progressPercentage : 0;
+      this.voters = input.voters? input.voters.map(voter => new User().deserialize(voter)) : [];
     }
     return this;
   }
@@ -84,14 +86,16 @@ export class Track implements Serializable<Track> {
 
   upVote(user: User) {
     this.voters.push(user);
-    this.upvoted = true;
   }
 
   downVote(user: User) {
-    var index = this.voters.indexOf(user);
+    var index = this.voters.indexOf(this.voters.find(val => val.id === user.id));
     if (index > -1) {
       this.voters.splice(index, 1);
     }
-    this.upvoted = false;
+  }
+
+  isUpvoted(user: User): boolean {
+    return this.voters ? this.voters.filter(val  => val.id === user.id ).length > 0: false;
   }
 }

@@ -13,6 +13,7 @@ import { MdToolbarModule } from "@angular/material";
 import { MdMenuModule } from "@angular/material";
 import { MdSnackBarModule } from "@angular/material";
 import { MdProgressBarModule } from "@angular/material";
+import { MdProgressSpinnerModule } from "@angular/material";
 
 import { DndModule } from "ng2-dnd";
 
@@ -34,6 +35,22 @@ import { Session } from "./services/session.service";
 
 import { ErrorInterceptor } from "./interceptors/errorInterceptor";
 
+import { AngularFireModule } from "angularfire2";
+
+// New imports to update based on AngularFire2 version 4
+import { AngularFireDatabaseModule } from "angularfire2/database";
+import { AngularFireAuthModule } from "angularfire2/auth";
+import { RoomComponent } from "./room/room.component";
+
+export const firebaseConfig = {
+  apiKey: "AIzaSyB8mKIbXTAQkxbU_GYWAHB6xK0iPFLDRxw",
+  authDomain: "soundfoundry-f739c.firebaseapp.com",
+  databaseURL: "https://soundfoundry-f739c.firebaseio.com",
+  projectId: "soundfoundry-f739c",
+  storageBucket: "soundfoundry-f739c.appspot.com",
+  messagingSenderId: "240027328713"
+};
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,7 +59,8 @@ import { ErrorInterceptor } from "./interceptors/errorInterceptor";
     AuthCallbackComponent,
     LoginComponent,
     LandingComponent,
-    PlaybuttonComponent
+    PlaybuttonComponent,
+    RoomComponent
   ],
   imports: [
     BrowserModule,
@@ -59,6 +77,10 @@ import { ErrorInterceptor } from "./interceptors/errorInterceptor";
     MdMenuModule,
     MdSnackBarModule,
     MdProgressBarModule,
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireDatabaseModule,
+    AngularFireAuthModule,
+    MdProgressSpinnerModule,
     DndModule.forRoot()
   ],
   providers: [

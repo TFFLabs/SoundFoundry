@@ -1,29 +1,29 @@
 <section class="mat-typography">
-  <div *ngIf="playlistService.currentlyPlaying" class="grid grid-pad">
+  <div *ngIf="playlistService.room.tracks.length > 0" class="grid grid-pad">
     <div class="col-image">
-      <img src="{{playlistService.currentlyPlaying.album.getMediumImage().url}}" class="image" />
+      <img src="{{playlistService.room.tracks[0].album.getMediumImage().url}}" class="image" />
       <div class="image-over">
         <md-icon *ngIf="!playlistService.isPlaying" (click)="playCurrentSong()">play_circle_filled</md-icon>
         <md-icon *ngIf="playlistService.isPlaying" (click)="pauseCurrentSong()">pause_circle_filled</md-icon>
       </div>
     </div>
     <div class="col-song-name">
-      <md-progress-bar [color]="progress_bar_color" [mode]="progress_bar_mode" [value]="playlistService.currentlyPlaying.progressPercentage">
+      <md-progress-bar [color]="progress_bar_color" [mode]="progress_bar_mode" [value]="playlistService.room.tracks[0].progressPercentage">
       </md-progress-bar>
       <h4>
         <p>
-          <a>{{playlistService.currentlyPlaying.name}}</a><br/>
+          <a>{{playlistService.room.tracks[0].name}}</a><br/>
           <a class="playlist-artist" mdTooltip="Artists">
-            <ng-container *ngFor="let artist of playlistService.currentlyPlaying.artists">
+            <ng-container *ngFor="let artist of playlistService.room.tracks[0].artists">
               {{artist.name}}
             </ng-container>
           </a>
           <a class="playlist-artist-album-divider">/</a>
           <a class="playlist-album" mdTooltip="Album">
-            {{playlistService.currentlyPlaying.album.name}}
+            {{playlistService.room.tracks[0].album.name}}
           </a><br/>
-          <img class="owner_img" *ngIf="playlistService.currentlyPlaying.voters.length > 0" src="{{playlistService.currentlyPlaying.voters[0].getSmallestImage().url}}"
-            mdTooltip="{{playlistService.currentlyPlaying.voters[0].display_name}}" alt="{{playlistService.currentlyPlaying.voters[0].display_name}}"
+          <img class="owner_img" *ngIf="playlistService.room.tracks[0].voters.length > 0" src="{{playlistService.room.tracks[0].voters[0].getSmallestImage().url}}"
+            mdTooltip="{{playlistService.room.tracks[0].voters[0].display_name}}" alt="{{playlistService.room.tracks[0].voters[0].display_name}}"
           />
         </p>
       </h4>
