@@ -7,7 +7,7 @@ import { PlaylistService } from "app/services/playlist.service";
   styleUrls: ["./room.component.css"]
 })
 export class RoomComponent implements OnInit {
-  constructor() {}
+  constructor(private playlistService: PlaylistService) {}
 
   ngOnInit() {}
 }

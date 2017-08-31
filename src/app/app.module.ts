@@ -2,6 +2,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { HttpModule }  from '@angular/http';
 
 import { MdButtonModule } from "@angular/material";
 import { MdListModule } from "@angular/material";
@@ -26,30 +27,16 @@ import { LoginComponent } from "./login/login.component";
 import { LandingComponent } from "./landing/landing.component";
 import { PlaybuttonComponent } from "./playbutton/playbutton.component";
 import { PlaylistComponent } from "./playlist/playlist.component";
-import { AuthorizationService } from "./services/authorization.service";
+import { RoomComponent } from "./room/room.component";
 
+import { AuthorizationService } from "./services/authorization.service";
+import { Session } from "./services/session.service";
 import { PlaylistService } from "./services/playlist.service";
 import { SpotifyService } from "./services/spotify.service";
 import { UserService } from "./services/user.service";
-import { Session } from "./services/session.service";
+import { StompService } from 'ng2-stomp-service';
 
 import { ErrorInterceptor } from "./interceptors/errorInterceptor";
-
-import { AngularFireModule } from "angularfire2";
-
-// New imports to update based on AngularFire2 version 4
-import { AngularFireDatabaseModule } from "angularfire2/database";
-import { AngularFireAuthModule } from "angularfire2/auth";
-import { RoomComponent } from "./room/room.component";
-
-export const firebaseConfig = {
-  apiKey: "AIzaSyB8mKIbXTAQkxbU_GYWAHB6xK0iPFLDRxw",
-  authDomain: "soundfoundry-f739c.firebaseapp.com",
-  databaseURL: "https://soundfoundry-f739c.firebaseio.com",
-  projectId: "soundfoundry-f739c",
-  storageBucket: "soundfoundry-f739c.appspot.com",
-  messagingSenderId: "240027328713"
-};
 
 @NgModule({
   declarations: [
@@ -77,13 +64,13 @@ export const firebaseConfig = {
     MdMenuModule,
     MdSnackBarModule,
     MdProgressBarModule,
-    AngularFireModule.initializeApp(firebaseConfig),
-    AngularFireDatabaseModule,
-    AngularFireAuthModule,
     MdProgressSpinnerModule,
+    HttpModule,
     DndModule.forRoot()
   ],
   providers: [
+    //Check http://devsullo.com/github/angular2-stomp-over-websocket-service/ for documentation
+    StompService,
     AuthorizationService,
     {
       provide: "AuthorizationToken",

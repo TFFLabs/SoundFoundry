@@ -8,15 +8,17 @@ import { Track } from "app/models/track";
 export class Room implements Serializable<Room> {
   name: string;
   isPlaying: boolean;
-  tracks: Track[] = [];
+  currently_playing:Track;
   queueSize: number = 10;
 
   deserialize(input) {
     if (input) {
       this.name = input.name;
       this.isPlaying = input.isPlaying;
-      this.tracks = input.tracks?input.tracks.map(value => new Track().deserialize(value)): [];
       this.queueSize = input.queueSize;
+      if(input.currently_playing){
+        this.currently_playing = new Track().deserialize(input.currently_playing);
+      }
     }
     return this;
   }
