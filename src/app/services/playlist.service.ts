@@ -27,17 +27,18 @@ export class PlaylistService {
     //This shall come from the routing call in a future
     let roomName = "myroom";
     this.previewing = new Track();
+    let serverAddress = "https://soundfoundryserver.herokuapp.com"
 
     //get initial room values
     this.http
-      .get("http://localhost:8080/room/" + roomName, {})
+      .get("https://soundfoundryserver.herokuapp.com/room/" + roomName, {})
       .toPromise()
       .then(response => {
         this.room.deserialize(response.json());
 
         //Get initial track list
         this.http
-          .get("http://localhost:8080/room/" + roomName + "/track", {})
+          .get("https://soundfoundryserver.herokuapp.com/room/" + roomName + "/track", {})
           .toPromise()
           .then(response => {
             this.tracks = response
@@ -47,7 +48,7 @@ export class PlaylistService {
 
         //Once we have the initial values, proceed with socket configuration
         socketListener.configure({
-          host: "http://localhost:8080/soundfoundry-socket",
+          host: "https://soundfoundryserver.herokuapp.com/soundfoundry-socket",
           debug: false,
           queue: { init: false }
         });
@@ -106,7 +107,7 @@ export class PlaylistService {
         newtrack.voters.push(this.userService.user);
         this.http
           .post(
-            "http://localhost:8080/room/" + this.room.name + "/track/",
+            "https://soundfoundryserver.herokuapp.com/room/" + this.room.name + "/track/",
             newtrack
           )
           .toPromise();
@@ -171,7 +172,7 @@ export class PlaylistService {
   upVote(track: Track) {
     this.http
       .post(
-        "http://localhost:8080/room/" +
+        "https://soundfoundryserver.herokuapp.com/room/" +
           this.room.name +
           "/track/" +
           track.id +
@@ -188,7 +189,7 @@ export class PlaylistService {
   downVote(track: Track) {
     this.http
       .delete(
-        "http://localhost:8080/room/" +
+        "https://soundfoundryserver.herokuapp.com/room/" +
           this.room.name +
           "/track/" +
           track.id +
