@@ -14,11 +14,11 @@ export class PlaybuttonComponent implements OnInit {
 
   ngOnInit() {}
 
-  playCurrentSong() {
-    this.playlistService.playCurrentSong();
+  play() {
+    this.playlistService.playSong();
   }
 
-  pauseCurrentSong() {
-    this.playlistService.pauseCurrentSong();
+  pause() {
+    this.playlistService.pauseSong();
   }
 }

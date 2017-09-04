@@ -4,6 +4,7 @@ import { TrackLink } from "app/models/track-link";
 import { Serializable } from "app/models/serializable";
 import { User } from "app/models/user";
 
+
 export class Track implements Serializable<Track> {
   album: Album;
   artists: Artist[];
@@ -75,24 +76,6 @@ export class Track implements Serializable<Track> {
   pausePreview() {
     this.isPreviewing = false;
     this.preview.pause();
-  }
-
-  increaseProgress(increaseAmount: number) {
-    this.progress += increaseAmount;
-    this.progressPercentage = parseFloat(
-      (this.progress / this.duration_ms * 100).toFixed(1)
-    );
-  }
-
-  upVote(user: User) {
-    this.voters.push(user);
-  }
-
-  downVote(user: User) {
-    var index = this.voters.indexOf(this.voters.find(val => val.id === user.id));
-    if (index > -1) {
-      this.voters.splice(index, 1);
-    }
   }
 
   isUpvoted(user: User): boolean {
