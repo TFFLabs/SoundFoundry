@@ -18,19 +18,6 @@ export class PlaylistComponent implements OnInit {
 
   ngOnInit() {}
 
-  addSong($event) {
-    const songUrls: string = $event.mouseEvent.dataTransfer.getData(
-      "text/plain"
-    );
-    
-    songUrls.split("\n").map(songUrl => {
-      const songId: string = songUrl.substr(songUrl.lastIndexOf("/") + 1);
-      if (songId) {
-        this.playlistService.addTrackToTrackList(songId);
-      }
-    });
-  }
-
   playStopPreview(track: Track) {
     this.playlistService.playStopPreview(track);
   }

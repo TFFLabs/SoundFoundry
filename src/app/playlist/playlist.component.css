@@ -11,28 +11,23 @@
   text-shadow: 3px 0px lightseagreen;
 }
 
-.playlist-container {
+.playlist {
   display: flex !important;
   flex-flow: column;
   text-align: left !important;
-  width: 75%;
-  height: 350px;
   top: 0;
+  height: 79%;
   overflow: hidden;
   overflow-y: auto;
 }
 
-.playlist-container .empty{
+.playlist-empty{
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  border: 4px dashed #666;
-  padding: 40px 0 40px 40px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  padding: 10% 0 2% 2%;
   text-align: center;
-  font-size: 21px;
+  font-size: x-large;
   font-weight: bold;
   color: #bbb;
   height: 100%;

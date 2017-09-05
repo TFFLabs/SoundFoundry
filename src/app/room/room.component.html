@@ -1,8 +1,20 @@
-<div *ngIf="!playlistService.room">
-    <md-progress-spinner style="margin:0 auto;" mode="indeterminate">
-    </md-progress-spinner>
-</div>
-<div *ngIf="playlistService.room">
-    <app-playbutton></app-playbutton>
-    <app-playlist></app-playlist>
-</div>
+<section class="mat-typography">
+    <div *ngIf="!playlistService.room">
+        <md-progress-spinner style="margin:0 auto;" mode="indeterminate">
+        </md-progress-spinner>
+    </div>
+    <div *ngIf="playlistService.room" dnd-droppable (onDropSuccess)="addSong($event)">
+        <div class="room-header">
+            <a class="tittle">
+                {{playlistService.room.name}}
+            </a><br/>
+            <a class="description">
+                > {{playlistService.room.description}}
+            </a>
+        </div>
+        <div class="room-container">
+            <app-playbutton></app-playbutton>
+            <app-playlist></app-playlist>
+        </div>
+    </div>
+</section>
