@@ -22,8 +22,12 @@ export class User implements Serializable<User> {
   }
 
   private getSmallestImage(): Image {
-    if(this.images){
+    if(this.images && this.images.length > 0){
         return this.images.sort((image1, image2) => image1.width - image2.width)[0];
+    }else{
+      let img = new Image();
+      img.url = "../../assets/img/boy-with-headphones.png";
+      return img;
     }
   }
 }
