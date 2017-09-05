@@ -13,7 +13,7 @@
 }
 
 .grid {
-  width: 75%;
+  width: 100%;
 }
 
 .grid:after {
@@ -100,4 +100,5 @@ md-icon {
   height: 25px;
   border-radius: 50%;
   flex-shrink: 0;
+  background: black;
 }
