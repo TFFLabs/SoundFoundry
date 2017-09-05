@@ -75,8 +75,8 @@ export class PlaylistService {
   private process_room_feed = data => {
     if (this.room.name) {
       let aux = new Room().deserialize(data);
-      let send_play_signal =
-        this.room.currently_playing.id !== aux.currently_playing.id;
+      let send_play_signal = this.room.currently_playing && aux.currently_playing?
+        this.room.currently_playing.id !== aux.currently_playing.id : true;
       this.room.currently_playing = aux.currently_playing;
       if (send_play_signal) {
         this.playCurrentSong();
