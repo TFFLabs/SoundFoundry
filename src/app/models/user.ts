@@ -11,12 +11,18 @@ export class User implements Serializable<User> {
 
   deserialize(input) {
     if (input) {
+      this.id = input.id;
       this.country = input.country;
-      this.display_name = input.display_name;
+      this.display_name = input.display_name? input.display_name : this.id;
       this.email = input.email;
       this.images = input.images.map(value => new Image().deserialize(value));
-      this.id = input.id;
       this.thumbnail_small = this.getSmallestImage();
+    }
+
+    if(!this.images || this.images.length == 0){
+      let img = new Image();
+      img.url = "../../assets/img/boy-with-headphones.png";
+      this.images.push(img);
     }
     return this;
   }
@@ -24,10 +30,6 @@ export class User implements Serializable<User> {
   private getSmallestImage(): Image {
     if(this.images && this.images.length > 0){
         return this.images.sort((image1, image2) => image1.width - image2.width)[0];
-    }else{
-      let img = new Image();
-      img.url = "../../assets/img/boy-with-headphones.png";
-      return img;
     }
   }
 }
