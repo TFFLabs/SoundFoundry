@@ -111,14 +111,7 @@ class LoginDialog {
   top = screen.height / 2 - 250; // Dialog height is 500
 
   name = 'Spotify';
-  options = 'menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,width=' +
-  this.w +
-  ',height=' +
-  this.h +
-  ',top=' +
-  this.top +
-  ',left=' +
-  this.left;
+  options = 'menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,width=' + this.w + ',height=' + this.h + ',top=' + this.top + ',left=' + this.left;
 
   callReject(reject, authCompleted) {
     if (!authCompleted) {
