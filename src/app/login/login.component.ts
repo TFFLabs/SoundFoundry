@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
   }
 
   private isTokenNeeded(){
-    const authtoken = this.session.token;
+    const authtoken = this.session.access_token;
     return !authtoken || authtoken == "null";
   }
 

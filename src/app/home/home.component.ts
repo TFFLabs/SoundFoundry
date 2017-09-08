@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
   }
 
   public logout() {
-    this.session.token = null;
-    localStorage.setItem("foundry-spotify-token", null);
+    this.session.access_token = null;
+    localStorage.setItem('foundry-spotify-token', null);
   }
 }

@@ -1,15 +1,16 @@
-import { Injectable } from "@angular/core";
-import { Track } from "../models/track";
-import { SpotifyService } from "app/services/spotify.service";
-import { DomSanitizer } from "@angular/platform-browser";
-import { User } from "app/models/user";
-import { UserService } from "app/services/user.service";
-import { Room } from "app/models/room";
-import { Http } from "@angular/http";
+import { Injectable } from '@angular/core';
+import { Track } from '../models/track';
+import { SpotifyService } from 'app/services/spotify.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { User } from 'app/models/user';
+import { UserService } from 'app/services/user.service';
+import { Room } from 'app/models/room';
+import { Http } from '@angular/http';
 
-import * as Stomp from "stompjs";
-import * as SockJS from "sockjs-client";
-import { StompService } from "ng2-stomp-service";
+import * as Stomp from 'stompjs';
+import * as SockJS from 'sockjs-client';
+import { StompService } from 'ng2-stomp-service';
+import { AuthorizationService } from 'app/services/authorization.service';
 
 @Injectable()
 export class PlaylistService {
@@ -17,55 +18,66 @@ export class PlaylistService {
   previewing: Track;
   room: Room = new Room();
   tracks: Track[] = [];
+  serverAddress = 'https://soundfoundryserver.herokuapp.com'
+  // serverAddress = 'http://localhost:1337';
 
   constructor(
+    private authorizationService: AuthorizationService,
     private spotifyService: SpotifyService,
     private userService: UserService,
     private http: Http,
     private socketListener: StompService
   ) {
-    //This shall come from the routing call in a future
-    let roomName = "myroom";
+    // This shall come from the routing call in a future
+    const roomName = 'myroom';
     this.previewing = new Track();
-    let serverAddress = "https://soundfoundryserver.herokuapp.com"
 
-    //get initial room values
+    // get the user
+    this.userService.loadUser();
+
+    // get initial room values
     this.http
-      .get("https://soundfoundryserver.herokuapp.com/room/" + roomName, {})
+      .get(this.serverAddress + '/room/' + roomName, {})
       .toPromise()
       .then(response => {
         this.room.deserialize(response.json());
 
-        //Get initial track list
+        // Get initial track list
         this.http
-          .get("https://soundfoundryserver.herokuapp.com/room/" + roomName + "/track", {})
+          .get(this.serverAddress + '/room/' + roomName + '/track', {})
           .toPromise()
-          .then(response => {
-            this.tracks = response
-              ? response.json().map(value => new Track().deserialize(value))
+          .then(trakcResponse => {
+            this.tracks = trakcResponse
+              ? trakcResponse.json().map(value => new Track().deserialize(value))
               : [];
           });
 
-        //Once we have the initial values, proceed with socket configuration
+        // Once we have the initial values, proceed with socket configuration
         socketListener.configure({
-          host: "https://soundfoundryserver.herokuapp.com/soundfoundry-socket",
+          host: this.serverAddress + '/soundfoundry-socket',
           debug: false,
           queue: { init: false }
         });
 
-        //start socket connection
+        // start socket connection
         socketListener.startConnect().then(() => {
-          socketListener.done("init");
-
-          //subscribe socket to the specific room topic feed
+          socketListener.done('init');
+          // subscribe socket to the specific room topic feed
           socketListener.subscribe(
-            "/topic/room/" + this.room.name,
-            this.process_room_feed
+            '/topic/room/' + this.room.name,
+            this.process_room_feed,
+            {
+              user: {
+                id: this.userService.user.display_name,
+                name: this.userService.user.display_name,
+                img_url: this.userService.user.thumbnail_small
+              }
+            }
           );
 
-          //subscribe socket to the specific room tracks list feed
+          // subscribe socket to the specific room tracks list feed
           socketListener.subscribe(
-            "/topic/room/" + this.room.name + "/tracks",
+            '/topic/room/' + this.room.name + '/tracks',
             this.process_tracks_feed
           );
         });
@@ -74,12 +86,15 @@ export class PlaylistService {
 
   private process_room_feed = data => {
     if (this.room.name) {
-      let aux = new Room().deserialize(data);
-      let send_play_signal = this.room.currently_playing && aux.currently_playing?
-        this.room.currently_playing.id !== aux.currently_playing.id : true;
+      const aux = new Room().deserialize(data);
+      const send_play_signal =
+        this.room.currently_playing && aux.currently_playing
+          ? this.room.currently_playing.id !== aux.currently_playing.id
+          : true;
       this.room.currently_playing = aux.currently_playing;
       if (send_play_signal) {
         this.playCurrentSong();
+        this.authorizationService.refreshToken();
       }
     } else {
       this.room = new Room().deserialize(data);
@@ -98,17 +113,17 @@ export class PlaylistService {
 
   /**
    * Adds a new track to the list and upvote it
-   * @param trackId 
+   * @param trackId
    */
   addTrackToTrackList(trackId: String) {
     Promise.resolve(
       this.spotifyService.getTrack(trackId).subscribe(track => {
-        var newtrack = new Track().deserialize(track);
+        const newtrack = new Track().deserialize(track);
         newtrack.voters.push(this.userService.user);
         this.http
           .post(
-            "https://soundfoundryserver.herokuapp.com/room/" + this.room.name + "/track/",
-            newtrack
+          this.serverAddress + '/room/' + this.room.name + '/track/',
+          newtrack
           )
           .toPromise();
       })
@@ -117,7 +132,7 @@ export class PlaylistService {
 
   /**
    * Loads and reproduce the preview of a track
-   * @param track 
+   * @param track
    */
   playStopPreview(track: Track) {
     if (!this.previewing || track.id !== this.previewing.id) {
@@ -132,7 +147,6 @@ export class PlaylistService {
       this.previewing.pausePreview();
     }
   }
-
 
   private playCurrentSong() {
     if (this.room.currently_playing && this.isPlaying) {
@@ -167,35 +181,37 @@ export class PlaylistService {
 
   /**
    * Adds the user vote from the specified track.
-   * @param track 
+   * @param track
    */
   upVote(track: Track) {
     this.http
       .post(
-        "https://soundfoundryserver.herokuapp.com/room/" +
-          this.room.name +
-          "/track/" +
-          track.id +
-          "/voter",
-        this.userService.user
+      this.serverAddress +
+      '/room/' +
+      this.room.name +
+      '/track/' +
+      track.id +
+      '/voter',
+      this.userService.user
       )
       .toPromise();
   }
 
   /**
    * Removes user vote from the specified track.
-   * @param track 
+   * @param track
    */
   downVote(track: Track) {
     this.http
       .delete(
-        "https://soundfoundryserver.herokuapp.com/room/" +
-          this.room.name +
-          "/track/" +
-          track.id +
-          "/voter/" +
-          this.userService.user.id,
-        {}
+      this.serverAddress +
+      '/room/' +
+      this.room.name +
+      '/track/' +
+      track.id +
+      '/voter/' +
+      this.userService.user.id,
+      {}
       )
       .toPromise();
   }

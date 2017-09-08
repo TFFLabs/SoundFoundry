@@ -32,8 +32,8 @@ export class ErrorInterceptor implements HttpInterceptor {
             duration: 1500
           });
           snackBarRef.afterDismissed().subscribe(() => {
-            this.session.token = null;
-            this.router.navigate(["/landing"]);
+            this.session.access_token = null;
+            this.router.navigate(['/landing']);
           });
         }
       }

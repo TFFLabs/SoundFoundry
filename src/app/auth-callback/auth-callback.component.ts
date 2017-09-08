@@ -1,22 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
+import { Session } from "app/services/session.service";
 
 @Component({
-  selector: 'app-auth-callback',
-  templateUrl: './auth-callback.component.html',
-  styleUrls: ['./auth-callback.component.css']
+  selector: "app-auth-callback",
+  templateUrl: "./auth-callback.component.html",
+  styleUrls: ["./auth-callback.component.css"]
 })
 export class AuthCallbackComponent implements OnInit {
-
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
-    const hash = window.location.hash;
+    const search = window.location.search;
     if (window.location.search.substring(1).indexOf("error") !== -1) {
-        window.close();
-    } else if (hash) {
-        const token = window.location.hash.split('&')[0].split('=')[1];
-        localStorage.setItem('foundry-spotify-token', token);
+      window.close();
+    } else if (search) {
+      localStorage.setItem(
+        "foundry-spotify-code",
+        search.split("&")[0].split("=")[1]
+      );
     }
   }
-
 }

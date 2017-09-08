@@ -6,12 +6,12 @@ import { Session } from "app/services/session.service";
 @Injectable()
 export class SpotifyService {
   baseUrl: string = "https://api.spotify.com/";
-  constructor(private http: HttpClient, private session: Session) {}
+  constructor(private http: HttpClient, private session: Session) { }
 
   private getAuthorizationHeader() {
     return {
       headers: new HttpHeaders({
-        Authorization: "Bearer " + this.session.token
+        Authorization: 'Bearer ' + this.session.access_token
       })
     };
   }
