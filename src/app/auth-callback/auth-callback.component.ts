@@ -11,9 +11,11 @@ export class AuthCallbackComponent implements OnInit {
 
   ngOnInit() {
     const search = window.location.search;
+    console.log(search)
     if (window.location.search.substring(1).indexOf("error") !== -1) {
       window.close();
     } else if (search) {
+      console.log(search.split("&")[0].split("=")[1])
       localStorage.setItem(
         "foundry-spotify-code",
         search.split("&")[0].split("=")[1]
