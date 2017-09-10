@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  sf_server_address: 'https://soundfoundryserver.herokuapp.com'
 };

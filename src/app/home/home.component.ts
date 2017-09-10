@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { UserService } from "app/services/user.service";
-import { Session } from "app/services/session.service";
+import { AuthorizationService } from "app/services/authorization.service";
 
 import { Observable } from "rxjs/Observable";
 
@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private session: Session,
+    private authorization: AuthorizationService,
   ) {
   }
   ngOnInit() {
@@ -22,7 +22,6 @@ export class HomeComponent implements OnInit {
   }
 
   public logout() {
-    this.session.access_token = null;
-    localStorage.setItem('foundry-spotify-token', null);
+    this.authorization.logout();
   }
 }

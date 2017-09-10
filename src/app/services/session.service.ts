@@ -8,12 +8,17 @@ export class Session {
   code: string;
   access_token: string;
   refresh_token: string;
-  redirect_uri = 'http://localhost:4200/auth_callback';
 
   constructor() { }
 
   public initTokens(token: any) {
     this.access_token = token.access_token ? token.access_token : this.access_token;
     this.refresh_token = token.refresh_token ? token.refresh_token : this.refresh_token;
+  }
+
+  public clearSession() {
+    this.code = null;
+    this.access_token = null;
+    this.refresh_token = null;
   }
 }

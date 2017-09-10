@@ -33,7 +33,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           });
           snackBarRef.afterDismissed().subscribe(() => {
             this.session.access_token = null;
-            this.router.navigate(['/landing']);
+            this.router.navigate(['']);
           });
         }
       }

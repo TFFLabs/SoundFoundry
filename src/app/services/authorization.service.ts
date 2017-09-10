@@ -4,11 +4,11 @@ import 'rxjs/Rx';
 import { SpotifyService } from 'app/services/spotify.service';
 import { Session } from 'app/services/session.service';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AuthorizationService {
-  serverAddress = 'https://soundfoundryserver.herokuapp.com'
-  // serverAddress = 'http://localhost:1337';
+  storage_value_name = 'foundry-spotify-code'
   loginDialog: LoginDialog;
   isAuthenticationCompleted: boolean;
   authenticationDialog: Window;
@@ -23,7 +23,7 @@ export class AuthorizationService {
     this.isAuthenticationCompleted = false;
     this.http
       .get(
-      this.serverAddress + '/spotify/auth/url'
+      environment.sf_server_address + '/spotify/auth/url'
       ).subscribe(url => {
         this.popup_url = url;
       });
@@ -38,10 +38,15 @@ export class AuthorizationService {
     return Observable.fromPromise(loginPromise).catch(this.handleError);
   }
 
+  logout() {
+    this.session.clearSession();
+    localStorage.setItem(this.storage_value_name, null);
+  }
+
   private getToken() {
     this.http
       .post(
-      this.serverAddress + '/spotify/auth/token',
+        environment.sf_server_address + '/spotify/auth/token',
       this.session
       )
       .toPromise()
@@ -53,7 +58,7 @@ export class AuthorizationService {
   public refreshToken() {
     this.http
       .put(
-      this.serverAddress + '/spotify/auth/token',
+        environment.sf_server_address + '/spotify/auth/token',
       this.session
       )
       .toPromise()
@@ -64,7 +69,7 @@ export class AuthorizationService {
 
   private getStorageChangedFunction(resolve) {
     return event => {
-      if (event.key === 'foundry-spotify-code') {
+      if (event.key === this.storage_value_name) {
         if (this.authenticationDialog) {
           this.authenticationDialog.close();
         }
