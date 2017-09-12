@@ -11,6 +11,7 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { StompService } from 'ng2-stomp-service';
 import { AuthorizationService } from 'app/services/authorization.service';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class PlaylistService {
@@ -18,8 +19,6 @@ export class PlaylistService {
   previewing: Track;
   room: Room = new Room();
   tracks: Track[] = [];
-  serverAddress = 'https://soundfoundryserver.herokuapp.com'
-  // serverAddress = 'http://localhost:1337';
 
   constructor(
     private authorizationService: AuthorizationService,
@@ -37,14 +36,14 @@ export class PlaylistService {
 
     // get initial room values
     this.http
-      .get(this.serverAddress + '/room/' + roomName, {})
+      .get(environment.sf_server_address + '/room/' + roomName, {})
       .toPromise()
       .then(response => {
         this.room.deserialize(response.json());
 
         // Get initial track list
         this.http
-          .get(this.serverAddress + '/room/' + roomName + '/track', {})
+          .get(environment.sf_server_address + '/room/' + roomName + '/track', {})
           .toPromise()
           .then(trakcResponse => {
             this.tracks = trakcResponse
@@ -54,7 +53,7 @@ export class PlaylistService {
 
         // Once we have the initial values, proceed with socket configuration
         socketListener.configure({
-          host: this.serverAddress + '/soundfoundry-socket',
+          host: environment.sf_server_address + '/soundfoundry-socket',
           debug: false,
           queue: { init: false }
         });
@@ -122,7 +121,7 @@ export class PlaylistService {
         newtrack.voters.push(this.userService.user);
         this.http
           .post(
-          this.serverAddress + '/room/' + this.room.name + '/track/',
+          environment.sf_server_address + '/room/' + this.room.name + '/track/',
           newtrack
           )
           .toPromise();
@@ -186,7 +185,7 @@ export class PlaylistService {
   upVote(track: Track) {
     this.http
       .post(
-      this.serverAddress +
+      environment.sf_server_address +
       '/room/' +
       this.room.name +
       '/track/' +
@@ -204,7 +203,7 @@ export class PlaylistService {
   downVote(track: Track) {
     this.http
       .delete(
-      this.serverAddress +
+      environment.sf_server_address +
       '/room/' +
       this.room.name +
       '/track/' +
