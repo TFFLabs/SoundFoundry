@@ -57,7 +57,7 @@ export class Track implements Serializable<Track> {
   }
 
   getVotersNameList(): string {
-    return this.voters.map(vote => vote.display_name + ' ').toString();
+    return this.voters.map(vote => vote.display_name).join(' ,');
   }
 
   stopPreview() {

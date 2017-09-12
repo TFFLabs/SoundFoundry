@@ -19,6 +19,7 @@ export class PlaylistService {
   previewing: Track;
   room: Room = new Room();
   tracks: Track[] = [];
+  private server_address = environment.sf_server_address;
 
   constructor(
     private authorizationService: AuthorizationService,
@@ -36,14 +37,14 @@ export class PlaylistService {
 
     // get initial room values
     this.http
-      .get(environment.sf_server_address + '/room/' + roomName, {})
+      .get(this.server_address + '/room/' + roomName, {})
       .toPromise()
       .then(response => {
         this.room.deserialize(response.json());
 
         // Get initial track list
         this.http
-          .get(environment.sf_server_address + '/room/' + roomName + '/track', {})
+          .get(this.server_address + '/room/' + roomName + '/track', {})
           .toPromise()
           .then(trakcResponse => {
             this.tracks = trakcResponse
@@ -53,7 +54,7 @@ export class PlaylistService {
 
         // Once we have the initial values, proceed with socket configuration
         socketListener.configure({
-          host: environment.sf_server_address + '/soundfoundry-socket',
+          host: this.server_address + '/soundfoundry-socket',
           debug: false,
           queue: { init: false }
         });
@@ -121,7 +122,7 @@ export class PlaylistService {
         newtrack.voters.push(this.userService.user);
         this.http
           .post(
-          environment.sf_server_address + '/room/' + this.room.name + '/track/',
+          this.server_address + '/room/' + this.room.name + '/track/',
           newtrack
           )
           .toPromise();
@@ -185,7 +186,7 @@ export class PlaylistService {
   upVote(track: Track) {
     this.http
       .post(
-      environment.sf_server_address +
+      this.server_address +
       '/room/' +
       this.room.name +
       '/track/' +
@@ -203,7 +204,7 @@ export class PlaylistService {
   downVote(track: Track) {
     this.http
       .delete(
-      environment.sf_server_address +
+      this.server_address +
       '/room/' +
       this.room.name +
       '/track/' +
