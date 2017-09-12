@@ -15,19 +15,18 @@
 				</a>
 			</h4>
 			<h3 md-line class="votes" class="votes">
-				<img *ngIf="track.voters.length > 0" src="{{track.voters[0].getSmallestImage().url}}" mdTooltip="{{track.voters[0].display_name}}" alt="{{track.voters[0].display_name}}"
-				/>
-				<div *ngIf="track.voters.length > 1">+{{track.voters.length - 1}}</div>
+				<img mdTooltip="{{track.getVotersNameList()}}" *ngIf="track.voters.length > 0" src="{{track.voters[0].getSmallestImage().url}}" alt="{{track.voters[0].display_name}}"/>
+				<div mdTooltip="{{track.getVotersNameList()}}" *ngIf="track.voters.length > 1">+{{track.voters.length - 1}}</div>
 			</h3>
 			<button [disabled]="!track.preview_url" md-icon-button (click)="playStopPreview(track)">
-				<md-icon *ngIf="(playlistService.previewing.id === track.id && playlistService.previewing.isPreviewing)">visibility_off</md-icon>
-				<md-icon *ngIf="(playlistService.previewing.id === track.id && !playlistService.previewing.isPreviewing) || playlistService.previewing.id !== track.id">visibility</md-icon>
+				<md-icon *ngIf="(playlistService.previewing.id === track.id && playlistService.previewing.isPreviewing)" mdTooltip="Stop preview" >visibility_off</md-icon>
+				<md-icon *ngIf="(playlistService.previewing.id === track.id && !playlistService.previewing.isPreviewing) || playlistService.previewing.id !== track.id" mdTooltip="Play preview">visibility</md-icon>
 			</button>
 			<button md-icon-button (click)="toogleVote(track)">
 				<md-icon *ngIf="!track.isUpvoted(userService.user)">thumb_up</md-icon>
 				<md-icon *ngIf="track.isUpvoted(userService.user)" class="upvoted-icon">thumb_up</md-icon>
 			</button>
-			<button md-icon-button>
+			<button md-icon-button mdTooltip="TBD" >
 				<md-icon>list</md-icon>
 			</button>
 		</md-list-item>
