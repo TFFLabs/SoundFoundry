@@ -12,6 +12,7 @@ import * as SockJS from 'sockjs-client';
 import { StompService } from 'ng2-stomp-service';
 import { AuthorizationService } from 'app/services/authorization.service';
 import { environment } from '../../environments/environment';
+import { EventsService } from '../services/events.service';
 
 @Injectable()
 export class PlaylistService {
@@ -26,7 +27,8 @@ export class PlaylistService {
     private spotifyService: SpotifyService,
     private userService: UserService,
     private http: Http,
-    private socketListener: StompService
+    private socketListener: StompService,
+    private eventsService: EventsService
   ) {
     // This shall come from the routing call in a future
     const roomName = 'myroom';
@@ -119,6 +121,7 @@ export class PlaylistService {
     Promise.resolve(
       this.spotifyService.getTrack(trackId).subscribe(track => {
         const newtrack = new Track().deserialize(track);
+        this.eventsService.sendAddTrackEvent(this.userService.user.id);
         newtrack.voters.push(this.userService.user);
         this.http
           .post(
