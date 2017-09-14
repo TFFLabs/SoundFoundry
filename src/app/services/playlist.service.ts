@@ -21,7 +21,7 @@ export class PlaylistService {
   room: Room = new Room();
   tracks: Track[] = [];
   private server_address = environment.sf_server_address;
-  private time_difference_tolerance_ms = 2000;
+  private time_difference_tolerance_ms = 5000;
 
   constructor(
     private authorizationService: AuthorizationService,
