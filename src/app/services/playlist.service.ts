@@ -12,6 +12,7 @@ import * as SockJS from 'sockjs-client';
 import { StompService } from 'ng2-stomp-service';
 import { AuthorizationService } from 'app/services/authorization.service';
 import { environment } from '../../environments/environment';
+import { PlaybackContext } from 'app/models/playback_context';
 
 @Injectable()
 export class PlaylistService {
@@ -20,6 +21,7 @@ export class PlaylistService {
   room: Room = new Room();
   tracks: Track[] = [];
   private server_address = environment.sf_server_address;
+  private time_difference_tolerance_ms = 2000;
 
   constructor(
     private authorizationService: AuthorizationService,
@@ -150,15 +152,23 @@ export class PlaylistService {
 
   private playCurrentSong() {
     if (this.room.currently_playing && this.isPlaying) {
-      Promise.resolve(
-        this.spotifyService
-          .playTrack(this.room.currently_playing.id)
-          .subscribe()
-      ).then(() => {
-        this.spotifyService
-          .updatePlay(this.room.currently_playing.progress)
-          .subscribe();
-      });
+      this.spotifyService
+        .playTracks(this.room.currently_playing.id, this.tracks.map(value => value.id).slice(1, 5))
+        .subscribe(() => {
+          this.spotifyService.getCurrentlyPlayingTrack().subscribe(playback_context => {
+            const pb_context = new PlaybackContext().deserialize(playback_context);
+            // if the progress difference is more than X seconds, seek current progress
+            const progress_diference = Math.abs(pb_context.progress_ms - this.room.currently_playing.progress);
+            if (progress_diference > this.time_difference_tolerance_ms) {
+              this.spotifyService
+                .updatePlay(this.room.currently_playing.progress)
+                .subscribe();
+            }
+          }
+          );
+          this.isPlaying = true;
+        }
+        )
     }
   }
 
