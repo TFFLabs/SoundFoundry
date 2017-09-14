@@ -21,6 +21,7 @@ export class EventslogComponent implements OnInit {
   }
 
   printEvent = (data) => {
+    this.eventlog = this.eventlog.slice(0, 20);
     this.eventlog.push([new Date(), data['user'], data['context']['trackname'], data['context']['artist']]);
   }
 }
