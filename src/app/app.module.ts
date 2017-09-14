@@ -72,7 +72,7 @@ import { ErrorInterceptor } from './interceptors/errorInterceptor';
     DndModule.forRoot()
   ],
   providers: [
-    //Check http://devsullo.com/github/angular2-stomp-over-websocket-service/ for documentation
+    // Check http://devsullo.com/github/angular2-stomp-over-websocket-service/ for documentation
     StompService,
     AuthorizationService,
     {

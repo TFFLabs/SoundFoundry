@@ -121,7 +121,7 @@ export class PlaylistService {
     Promise.resolve(
       this.spotifyService.getTrack(trackId).subscribe(track => {
         const newtrack = new Track().deserialize(track);
-        this.eventsService.sendAddTrackEvent(this.userService.user.id);
+        this.eventsService.sendAddTrackEvent(this.userService.user.id, newtrack.name, newtrack.artists[0].name);
         newtrack.voters.push(this.userService.user);
         this.http
           .post(
