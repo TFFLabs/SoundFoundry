@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EventsService } from '../services/events.service';
+import { Event } from '../models/event';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-eventslog',
@@ -8,20 +10,17 @@ import { EventsService } from '../services/events.service';
 })
 export class EventslogComponent implements OnInit {
 
-  eventlog: String;
+  eventlog: Array<[Date, string, string, string]>;
 
   constructor(private eventsService: EventsService) {
-    eventsService.subscribeToEvents(this.echoEvent);
+    eventsService.subscribeToEvents(this.printEvent);
+    this.eventlog = new Array();
   }
 
   ngOnInit() {
   }
 
-  addEvent(text: string) {
-    this.eventlog = this.eventlog + `<p>${text}`;
-  }
-
-  echoEvent = (data) => {
-    console.log('Recibiendoxxxxx evento: ' + JSON.stringify(data));
+  printEvent = (data) => {
+    this.eventlog.push([new Date(), data['user'], data['context']['trackname'], data['context']['artist']]);
   }
 }

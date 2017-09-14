@@ -26,7 +26,6 @@ export class EventsService {
     const addTrackEvent = new Event(user, EventType.ADDTRACK);
     addTrackEvent.setContext('artist', artist);
     addTrackEvent.setContext('trackname', trackname);
-    console.log('Enviando evento ' + JSON.stringify(addTrackEvent));
     this.stomp.send('/app/events', addTrackEvent);
   }
 
