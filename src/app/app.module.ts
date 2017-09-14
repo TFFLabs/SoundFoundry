@@ -1,43 +1,44 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
-import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HttpModule }  from '@angular/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpModule } from '@angular/http';
 
-import { MdButtonModule } from "@angular/material";
-import { MdListModule } from "@angular/material";
-import { MdIconModule } from "@angular/material";
-import { MdDialogModule } from "@angular/material";
-import { MdTooltipModule } from "@angular/material";
-import { MdSidenavModule } from "@angular/material";
-import { MdToolbarModule } from "@angular/material";
-import { MdMenuModule } from "@angular/material";
-import { MdSnackBarModule } from "@angular/material";
-import { MdProgressBarModule } from "@angular/material";
-import { MdProgressSpinnerModule } from "@angular/material";
+import { MdButtonModule } from '@angular/material';
+import { MdListModule } from '@angular/material';
+import { MdIconModule } from '@angular/material';
+import { MdDialogModule } from '@angular/material';
+import { MdTooltipModule } from '@angular/material';
+import { MdSidenavModule } from '@angular/material';
+import { MdToolbarModule } from '@angular/material';
+import { MdMenuModule } from '@angular/material';
+import { MdSnackBarModule } from '@angular/material';
+import { MdProgressBarModule } from '@angular/material';
+import { MdProgressSpinnerModule } from '@angular/material';
 
-import { DndModule } from "ng2-dnd";
+import { DndModule } from 'ng2-dnd';
 
-import { AppRoutingModule } from "./app-routing/app-routing.module";
+import { AppRoutingModule } from './app-routing/app-routing.module';
 
-import { AppComponent } from "./app.component";
-import { HomeComponent } from "./home/home.component";
-import { AuthCallbackComponent } from "./auth-callback/auth-callback.component";
-import { LoginComponent } from "./login/login.component";
-import { LandingComponent } from "./landing/landing.component";
-import { PlaybuttonComponent } from "./playbutton/playbutton.component";
-import { PlaylistComponent } from "./playlist/playlist.component";
-import { RoomComponent } from "./room/room.component";
-
-import { AuthorizationService } from "./services/authorization.service";
-import { Session } from "./services/session.service";
-import { PlaylistService } from "./services/playlist.service";
-import { SpotifyService } from "./services/spotify.service";
-import { UserService } from "./services/user.service";
-import { StompService } from 'ng2-stomp-service';
-
-import { ErrorInterceptor } from "./interceptors/errorInterceptor";
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { AuthCallbackComponent } from './auth-callback/auth-callback.component';
+import { LoginComponent } from './login/login.component';
+import { LandingComponent } from './landing/landing.component';
+import { PlaybuttonComponent } from './playbutton/playbutton.component';
+import { PlaylistComponent } from './playlist/playlist.component';
+import { RoomComponent } from './room/room.component';
 import { EventslogComponent } from './eventslog/eventslog.component';
+
+import { AuthorizationService } from './services/authorization.service';
+import { Session } from './services/session.service';
+import { PlaylistService } from './services/playlist.service';
+import { SpotifyService } from './services/spotify.service';
+import { UserService } from './services/user.service';
+import { StompService } from 'ng2-stomp-service';
+import { EventsService } from './services/events.service';
+
+import { ErrorInterceptor } from './interceptors/errorInterceptor';
 
 @NgModule({
   declarations: [
@@ -75,9 +76,9 @@ import { EventslogComponent } from './eventslog/eventslog.component';
     StompService,
     AuthorizationService,
     {
-      provide: "AuthorizationToken",
+      provide: 'AuthorizationToken',
       useValue: {
-        value: localStorage.getItem("angular2-spotify-token")
+        value: localStorage.getItem('angular2-spotify-token')
       }
     },
     PlaylistService,
@@ -88,6 +89,7 @@ import { EventslogComponent } from './eventslog/eventslog.component';
       useClass: ErrorInterceptor,
       multi: true
     },
+    EventsService,
     Session
   ],
   bootstrap: [AppComponent]
