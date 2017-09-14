@@ -18,7 +18,6 @@ export class EventsService {
     // Start socket connection
     stomp.startConnect().then(() => {
       stomp.done('init');
-      console.log('Da client has konnected');
     });
   }
 

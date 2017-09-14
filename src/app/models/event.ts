@@ -3,7 +3,7 @@ import { EventType } from './eventType';
 export class Event {
     user: string;
     type: EventType;
-    context: any;
+    context: Object;
 
     constructor(user, type) {
         this.user = user;
