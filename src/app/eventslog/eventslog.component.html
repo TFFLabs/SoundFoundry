@@ -1,0 +1,3 @@
+<div class="event-log">
+  <div *ngFor="let event of eventlog">{{ event[0] | date:'shortTime' }} - <b>{{ event[1] }}</b> added <b>{{ event[2] }}</b> by <b>{{ event[3] }}</b></div>
+</div>

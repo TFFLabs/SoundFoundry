@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
-  sf_server_address: 'http://localhost:1337'
+  sf_server_address: 'http://localhost:1337',
+  stomp_debug: true
 };

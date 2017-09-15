@@ -1,0 +1,7 @@
+.event-log{
+    width: 100%;
+    height: 10%;
+    background-color: #b8cdef;
+    overflow: hidden;
+    overflow-y: auto;
+}
