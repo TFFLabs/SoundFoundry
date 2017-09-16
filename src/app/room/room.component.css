@@ -1,6 +1,6 @@
 .room-header {
   width: 100%;
-  position: absolute;
+  float: left;
   text-align: left;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -11,10 +11,8 @@
 
 .room-container {
   width: 75%;
-  height: 90%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  height: 85vh;
+  float: left;
   text-align: left;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -34,3 +32,12 @@
   font-weight: bold;
   color: gray;
 }
+
+.chat {
+  background-color: white;
+  min-height: 80vh;
+  float: right;
+  width: 24%;
+}
+
+

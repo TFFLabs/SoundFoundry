@@ -16,10 +16,7 @@ export class HomeComponent implements OnInit {
     private authorization: AuthorizationService,
   ) {
   }
-  ngOnInit() {
-    this.userService.loadUser();
-    this.userService.loadUserDevices();
-  }
+  ngOnInit() {}
 
   public logout() {
     this.authorization.logout();

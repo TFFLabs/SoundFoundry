@@ -12,11 +12,13 @@
 }
 
 .playlist {
+  float:left;
   display: flex !important;
   flex-flow: column;
   text-align: left !important;
   top: 0;
   height: 79%;
+  width: 100%;
   overflow: hidden;
   overflow-y: auto;
 }
@@ -61,5 +63,5 @@
   display: inline;
   font-size: 13px;
   font-weight: bold;
-  border: 4px solid #666;  
+  border: 4px solid #666;
 }

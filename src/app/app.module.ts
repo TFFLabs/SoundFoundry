@@ -39,6 +39,7 @@ import { StompService } from 'ng2-stomp-service';
 import { EventsService } from './services/events.service';
 
 import { ErrorInterceptor } from './interceptors/errorInterceptor';
+import { UsersbarComponent } from './usersbar/usersbar.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { ErrorInterceptor } from './interceptors/errorInterceptor';
     LandingComponent,
     PlaybuttonComponent,
     RoomComponent,
-    EventslogComponent
+    EventslogComponent,
+    UsersbarComponent
   ],
   imports: [
     BrowserModule,
