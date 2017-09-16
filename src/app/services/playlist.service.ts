@@ -36,9 +36,6 @@ export class PlaylistService {
     const roomName = 'myroom';
     this.previewing = new Track();
 
-    // get the user
-    this.userService.loadUser();
-
     // get initial room values
     this.http
       .get(this.server_address + '/room/' + roomName, {})
@@ -120,8 +117,8 @@ export class PlaylistService {
    * @param trackId
    */
   addTrackToTrackList(trackId: String) {
-    Promise.resolve(
-      this.spotifyService.getTrack(trackId).subscribe(track => {
+
+      this.spotifyService.getTrack(trackId).then(track => {
         const newtrack = new Track().deserialize(track);
         const artist = newtrack.artists[0] ? newtrack.artists[0].name : '';
         this.eventsService.sendAddTrackEvent(this.userService.user.id, newtrack.name, artist);
@@ -133,7 +130,7 @@ export class PlaylistService {
           )
           .toPromise();
       })
-    );
+    ;
   }
 
   /**
@@ -158,15 +155,14 @@ export class PlaylistService {
     if (this.room.currently_playing && this.isPlaying) {
       this.spotifyService
         .playTracks(this.room.currently_playing.id, this.tracks.map(value => value.id).slice(1, 5))
-        .subscribe(() => {
-          this.spotifyService.getCurrentlyPlayingTrack().subscribe(playback_context => {
+        .then(() => {
+          this.spotifyService.getCurrentlyPlayingTrack().then(playback_context => {
             const pb_context = new PlaybackContext().deserialize(playback_context);
             // if the progress difference is more than X seconds, seek current progress
             const progress_diference = Math.abs(pb_context.progress_ms - this.room.currently_playing.progress);
             if (progress_diference > this.time_difference_tolerance_ms) {
               this.spotifyService
-                .updatePlay(this.room.currently_playing.progress)
-                .subscribe();
+                .updatePlay(this.room.currently_playing.progress);
             }
           }
           );
@@ -188,7 +184,7 @@ export class PlaylistService {
    * Pause the song reproduction in the client, this will not stop progress!.
    */
   pauseSong() {
-    Promise.resolve(this.spotifyService.pauseTrack().subscribe()).then(
+    this.spotifyService.pauseTrack().then(
       () => (this.isPlaying = false)
     );
   }
