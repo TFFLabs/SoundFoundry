@@ -75,12 +75,6 @@ import { ErrorInterceptor } from './interceptors/errorInterceptor';
     // Check http://devsullo.com/github/angular2-stomp-over-websocket-service/ for documentation
     StompService,
     AuthorizationService,
-    {
-      provide: 'AuthorizationToken',
-      useValue: {
-        value: localStorage.getItem('angular2-spotify-token')
-      }
-    },
     PlaylistService,
     SpotifyService,
     UserService,

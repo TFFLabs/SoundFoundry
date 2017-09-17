@@ -10,7 +10,6 @@ import { Http } from '@angular/http';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { StompService } from 'ng2-stomp-service';
-import { AuthorizationService } from 'app/services/authorization.service';
 import { environment } from '../../environments/environment';
 import { EventsService } from '../services/events.service';
 import { PlaybackContext } from 'app/models/playback_context';
@@ -25,7 +24,6 @@ export class PlaylistService {
   private time_difference_tolerance_ms = 5000;
 
   constructor(
-    private authorizationService: AuthorizationService,
     private spotifyService: SpotifyService,
     private userService: UserService,
     private http: Http,
@@ -95,7 +93,6 @@ export class PlaylistService {
       this.room.currently_playing = aux.currently_playing;
       if (send_play_signal) {
         this.playCurrentSong();
-        this.authorizationService.refreshToken();
       }
     } else {
       this.room = new Room().deserialize(data);

@@ -1,22 +1,26 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Injector } from '@angular/core';
 import {
   HttpInterceptor,
   HttpRequest,
   HttpHandler,
   HttpEvent,
   HttpErrorResponse
-} from "@angular/common/http";
-import { Observable } from "rxjs/Observable";
-import "rxjs/add/operator/do";
-import { Router } from "@angular/router";
-import { Session } from "app/services/session.service";
-import { MdSnackBar } from "@angular/material";
+} from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/do';
+import { Router } from '@angular/router';
+import { Session } from 'app/services/session.service';
+import { MdSnackBar } from '@angular/material';
+import { AuthorizationService } from 'app/services/authorization.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
+  private authService: AuthorizationService;
+
   constructor(
     private router: Router,
     private session: Session,
+    private injector: Injector,
     public snackBar: MdSnackBar
   ) {}
 
@@ -27,14 +31,24 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(req).do(
       event => {},
       err => {
-        if (err instanceof HttpErrorResponse && err.status == 401) {
-          let snackBarRef = this.snackBar.open("Session expired, redirecting to login...", "",{
-            duration: 1500
-          });
-          snackBarRef.afterDismissed().subscribe(() => {
-            this.session.access_token = null;
-            this.router.navigate(['']);
-          });
+        if (err instanceof HttpErrorResponse && err.status === 401) {
+          try {
+            // Hack to avoid cyclic injection error
+            this.authService = this.injector.get(AuthorizationService);
+            this.authService.refreshToken().then(() => next.handle(req));
+          } catch (err) {
+            const snackBarRef = this.snackBar.open(
+              'Session expired, redirecting to login...',
+              '',
+              {
+                duration: 2000
+              }
+            );
+            snackBarRef.afterDismissed().subscribe(() => {
+              this.session.clearSession();
+              this.router.navigate(['']);
+            });
+          }
         }
       }
     );
