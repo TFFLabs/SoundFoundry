@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PlaylistService } from 'app/services/playlist.service';
 import { Session } from 'app/services/session.service';
-import { AuthorizationService } from 'app/services/authorization.service';
 
 @Component({
   selector: 'app-landing',
@@ -10,7 +9,6 @@ import { AuthorizationService } from 'app/services/authorization.service';
 })
 export class LandingComponent implements OnInit {
   constructor(
-    private authorizationService: AuthorizationService,
     private session: Session
   ) {
     this.session.initFromStorage();
