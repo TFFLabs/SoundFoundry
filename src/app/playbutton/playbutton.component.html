@@ -22,7 +22,7 @@
           <a class="playlist-album" mdTooltip="Album">
             {{playlistService.room.currently_playing.album.name}}
           </a><br/>
-          <img class="owner_img" *ngIf="playlistService.room.currently_playing.voters.length > 0" src="{{playlistService.room.currently_playing.voters[0].getSmallestImage().url}}"
+          <img [style.background]="playlistService.room.currently_playing.voters[0].getVoterColor()" class="owner_img" *ngIf="playlistService.room.currently_playing.voters.length > 0" src="{{playlistService.room.currently_playing.voters[0].getSmallestImage().url}}"
             mdTooltip="{{playlistService.room.currently_playing.voters[0].display_name}}" alt="{{playlistService.room.currently_playing.voters[0].display_name}}"
           />
         </p>

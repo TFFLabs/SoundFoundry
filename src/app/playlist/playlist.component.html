@@ -15,7 +15,7 @@
 				</a>
 			</h4>
 			<h3 md-line class="votes" class="votes">
-				<img mdTooltip="{{track.getVotersNameList()}}" *ngIf="track.voters.length > 0" src="{{track.voters[0].getSmallestImage().url}}" alt="{{track.voters[0].display_name}}"/>
+				<img [style.background]="track.voters[0].getVoterColor()" mdTooltip="{{track.getVotersNameList()}}" *ngIf="track.voters.length > 0" src="{{track.voters[0].getSmallestImage().url}}" alt="{{track.voters[0].display_name}}"/>
 				<div mdTooltip="{{track.getVotersNameList()}}" *ngIf="track.voters.length > 1">+{{track.voters.length - 1}}</div>
 			</h3>
 			<button [disabled]="!track.preview_url" md-icon-button (click)="playStopPreview(track)">
