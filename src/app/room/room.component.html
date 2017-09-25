@@ -15,9 +15,16 @@
         <div class="room-container">
             <app-playbutton></app-playbutton>
             <app-playlist></app-playlist>
-            <app-eventslog></app-eventslog>
         </div>
-        <app-usersbar></app-usersbar>
-        <div class="chat">Future Chat Area:</div>
+        <md-tab-group class="demo-tab-group">
+            <md-tab label="Chat" disabled>
+            </md-tab>
+            <md-tab label="Users">
+                <app-usersbar></app-usersbar>
+            </md-tab>
+            <md-tab label="Log">
+                <app-eventslog></app-eventslog>
+            </md-tab>
+        </md-tab-group>
     </div>
 </section>

@@ -4,17 +4,18 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpModule } from '@angular/http';
 
-import { MdButtonModule } from '@angular/material';
-import { MdListModule } from '@angular/material';
-import { MdIconModule } from '@angular/material';
-import { MdDialogModule } from '@angular/material';
-import { MdTooltipModule } from '@angular/material';
-import { MdSidenavModule } from '@angular/material';
-import { MdToolbarModule } from '@angular/material';
-import { MdMenuModule } from '@angular/material';
-import { MdSnackBarModule } from '@angular/material';
-import { MdProgressBarModule } from '@angular/material';
-import { MdProgressSpinnerModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material';
+import { MatListModule } from '@angular/material';
+import { MatIconModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material';
+import { MatSidenavModule } from '@angular/material';
+import { MatToolbarModule } from '@angular/material';
+import { MatMenuModule } from '@angular/material';
+import { MatSnackBarModule } from '@angular/material';
+import { MatProgressBarModule } from '@angular/material';
+import { MatProgressSpinnerModule } from '@angular/material';
+import { MatTabsModule } from '@angular/material';
 
 import { DndModule } from 'ng2-dnd';
 
@@ -58,18 +59,19 @@ import { UsersbarComponent } from './usersbar/usersbar.component';
     BrowserModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MdButtonModule,
-    MdListModule,
-    MdIconModule,
-    MdDialogModule,
+    MatButtonModule,
+    MatListModule,
+    MatIconModule,
+    MatDialogModule,
     AppRoutingModule,
-    MdTooltipModule,
-    MdSidenavModule,
-    MdToolbarModule,
-    MdMenuModule,
-    MdSnackBarModule,
-    MdProgressBarModule,
-    MdProgressSpinnerModule,
+    MatTooltipModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatMenuModule,
+    MatSnackBarModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatTabsModule,
     HttpModule,
     DndModule.forRoot()
   ],
