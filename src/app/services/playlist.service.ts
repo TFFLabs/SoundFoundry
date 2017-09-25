@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Track } from '../models/track';
-import { SpotifyService } from 'app/services/spotify.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { User } from 'app/models/user';
-import { UserService } from 'app/services/user.service';
-import { Room } from 'app/models/room';
 import { Http } from '@angular/http';
-
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { StompService } from 'ng2-stomp-service';
+
+import { SpotifyService } from 'app/services/spotify.service';
+import { User } from 'app/models/user';
+import { UserService } from 'app/services/user.service';
+import { Room } from 'app/models/room';
 import { AuthorizationService } from 'app/services/authorization.service';
 import { environment } from '../../environments/environment';
 import { EventsService } from '../services/events.service';
@@ -82,7 +82,9 @@ export class PlaylistService {
             this.process_tracks_feed
           );
         });
-      });
+        return this.room;
+      })
+      .then ((room) => this.userService.addUserToRoom(room));
   }
 
   private process_room_feed = data => {

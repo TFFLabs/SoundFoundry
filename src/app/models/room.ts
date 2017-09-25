@@ -11,6 +11,7 @@ export class Room implements Serializable<Room> {
   isPlaying: boolean;
   currently_playing:Track;
   queueSize: number = 10;
+  users: User[] = [];
 
   deserialize(input) {
     if (input) {
@@ -21,6 +22,9 @@ export class Room implements Serializable<Room> {
       if(input.currently_playing){
         this.currently_playing = new Track().deserialize(input.currently_playing);
       }
+      this.users = input.users.map(value =>
+        new User().deserialize(value)
+      );
     }
     return this;
   }

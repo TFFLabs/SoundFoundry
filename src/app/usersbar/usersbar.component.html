@@ -1,0 +1,8 @@
+<div class="usersbar">
+  <h3> Active Users: </h3>
+  <div *ngFor="let user of playlistService.room.users">
+      <button md-menu-item>
+          <img *ngIf="user.images" src="{{user.thumbnail_small.url}}" alt="{{user.display_name}}" class="user_image"/>
+      </button>
+  </div>
+</div>

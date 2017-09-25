@@ -1,0 +1,14 @@
+.usersbar {
+  background-color: #2f4f4f;
+  color: white;
+  min-height: 10vh;
+  float: right;
+  width: 24%;
+}
+
+.user_image {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
