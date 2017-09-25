@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { UserService } from "app/services/user.service";
-import { AuthorizationService } from "app/services/authorization.service";
+import { Component, OnInit } from '@angular/core';
+import { UserService } from 'app/services/user.service';
+import { AuthorizationService } from 'app/services/authorization.service';
 
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs/Observable';
 
 @Component({
-  selector: "app-home",
-  templateUrl: "./home.component.html",
-  styleUrls: ["./home.component.css"]
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
 
@@ -16,7 +16,10 @@ export class HomeComponent implements OnInit {
     private authorization: AuthorizationService,
   ) {
   }
-  ngOnInit() {}
+
+  ngOnInit() {
+    this.userService.loadUser();
+  }
 
   public logout() {
     this.authorization.logout();

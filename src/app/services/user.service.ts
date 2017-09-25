@@ -11,11 +11,9 @@ import { Http } from '@angular/http';
 export class UserService {
   devices: Devices = new Devices();
   user: User = new User();
-  room: Room = new Room();
   private server_address = environment.sf_server_address;
 
   constructor(private spotifyService: SpotifyService,  private http: Http) {
-    this.loadUserDevices();
   }
 
   public loadUserDevices() {
@@ -25,13 +23,19 @@ export class UserService {
   }
 
   /**
-   * Removes user vote from the specified track.
-   * @param track
+   * Loads user information from spotify.
    */
-  public addUserToRoom(room: Room) {
+  public loadUser() {
     this.spotifyService.getUser().then(user => {
       this.user = new User().deserialize(user);
-    }).then(() =>
+    })
+  }
+
+  /**
+   * Registers the user in the room (in backend).
+   * @param room
+   */
+  public registerUserInRoom(room: Room) {
     this.http
       .post(
       this.server_address +
@@ -40,6 +44,6 @@ export class UserService {
       '/user',
       this.user
       )
-      .toPromise());
+      .toPromise();
   }
 }

@@ -84,7 +84,7 @@ export class PlaylistService {
         });
         return this.room;
       })
-      .then ((room) => this.userService.addUserToRoom(room));
+      .then (() => this.userService.registerUserInRoom(this.room));
   }
 
   private process_room_feed = data => {
