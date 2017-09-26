@@ -59,13 +59,9 @@ export class UserService {
    * @param room
    */
   public deregisterUserFromRoom(room: Room) {
+    console.log('Leaving room');
     const xhr = new XMLHttpRequest()
     xhr.open('DELETE', this.server_address + '/room/' + room.name + '/user/' + this.user.id, false);
     xhr.send();
-    /*
-    if (this.user.id) {
-      return this.http
-        .delete(this.server_address + '/room/' + room.name + '/user/' + this.user.id)
-    }*/
   }
 }

@@ -26,8 +26,8 @@ export class RoomComponent implements OnInit {
     });
   }
 
-  @HostListener('window:unload', [ '$event' ])
+  @HostListener('window:beforeunload', ['$event'])
   beforeUnloadHander(event) {
-    this.userService.deregisterUserFromRoom(this.playlistService.room);
+    return this.userService.deregisterUserFromRoom(this.playlistService.room);
   }
 }
