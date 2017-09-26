@@ -95,6 +95,7 @@ export class PlaylistService {
           ? this.room.currently_playing.id !== aux.currently_playing.id
           : true;
       this.room.currently_playing = aux.currently_playing;
+      this.room.users = aux.users;
       if (send_play_signal) {
         this.playCurrentSong();
         this.authorizationService.refreshToken();
