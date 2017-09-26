@@ -59,10 +59,13 @@ export class UserService {
    * @param room
    */
   public deregisterUserFromRoom(room: Room) {
+    const xhr = new XMLHttpRequest()
+    xhr.open('DELETE', this.server_address + '/room/' + room.name + '/user/' + this.user.id, false);
+    xhr.send();
+    /*
     if (this.user.id) {
-      this.http
+      return this.http
         .delete(this.server_address + '/room/' + room.name + '/user/' + this.user.id)
-        .toPromise();
-    }
+    }*/
   }
 }
