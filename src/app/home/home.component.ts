@@ -18,7 +18,6 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.loadUser();
   }
 
   public logout() {
