@@ -13,7 +13,9 @@ export class UserService {
   user: User = new User();
   private server_address = environment.sf_server_address;
 
-  constructor(private spotifyService: SpotifyService,  private http: Http) {
+  constructor(private spotifyService: SpotifyService, private http: Http) {
+    this.loadUser();
+    this.loadUserDevices();
   }
 
   public loadUserDevices() {
@@ -28,7 +30,7 @@ export class UserService {
   public loadUser() {
     this.spotifyService.getUser().then(user => {
       this.user = new User().deserialize(user);
-    })
+    });
   }
 
   /**
@@ -36,14 +38,31 @@ export class UserService {
    * @param room
    */
   public registerUserInRoom(room: Room) {
+    if (this.user.id) {
+      this.registerUser(room, this.user);
+    } else {
+      this.spotifyService.getUser().then(user => {
+        this.user = new User().deserialize(user);
+        this.registerUser(room, this.user);
+      });
+    }
+  }
+
+  private registerUser(room: Room, user: User) {
     this.http
-      .post(
-      this.server_address +
-      '/room/' +
-      room.name +
-      '/user',
-      this.user
-      )
+      .post(this.server_address + '/room/' + room.name + '/user', user)
       .toPromise();
+  }
+
+  /**
+   * Removes the user from the room (in backend).
+   * @param room
+   */
+  public deregisterUserFromRoom(room: Room) {
+    if (this.user.id) {
+      this.http
+        .delete(this.server_address + '/room/' + room.name + '/user/' + this.user.id)
+        .toPromise();
+    }
   }
 }
