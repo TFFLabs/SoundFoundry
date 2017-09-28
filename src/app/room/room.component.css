@@ -7,6 +7,11 @@
   box-sizing: border-box;
   padding: 1% 0% 1% 1%;
   background: lightblue;
+  background: lightblue; /* Old browsers */
+  background: -moz-linear-gradient(top, lightblue 0%, #ffffff 81%, #ffffff 99%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, lightblue 0%,#ffffff 81%,#ffffff 99%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, lightblue 0%,#ffffff 81%,#ffffff 99%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4f6872', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
 }
 
 .room-container {

@@ -17,6 +17,7 @@ import { MatProgressBarModule } from '@angular/material';
 import { MatProgressSpinnerModule } from '@angular/material';
 import { MatTabsModule } from '@angular/material';
 
+
 import { DndModule } from 'ng2-dnd';
 
 import { AppRoutingModule } from './app-routing/app-routing.module';
@@ -38,6 +39,8 @@ import { SpotifyService } from './services/spotify.service';
 import { UserService } from './services/user.service';
 import { StompService } from 'ng2-stomp-service';
 import { EventsService } from './services/events.service';
+
+import { CookieService } from 'ngx-cookie-service';
 
 import { ErrorInterceptor } from './interceptors/errorInterceptor';
 import { UsersbarComponent } from './usersbar/usersbar.component';
@@ -79,15 +82,10 @@ import { UsersbarComponent } from './usersbar/usersbar.component';
     // Check http://devsullo.com/github/angular2-stomp-over-websocket-service/ for documentation
     StompService,
     AuthorizationService,
-    {
-      provide: 'AuthorizationToken',
-      useValue: {
-        value: localStorage.getItem('angular2-spotify-token')
-      }
-    },
     PlaylistService,
     SpotifyService,
     UserService,
+    CookieService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorInterceptor,

@@ -8,25 +8,24 @@ import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AuthorizationService {
-  storage_value_name = 'foundry-spotify-code'
   loginDialog: LoginDialog;
   isAuthenticationCompleted: boolean;
   authenticationDialog: Window;
   storageChangedBehavior: any;
   popup_url;
 
-  constructor(
-    private http: HttpClient,
-    private session: Session
-  ) {
+  constructor(private http: HttpClient, private session: Session) {
     this.loginDialog = new LoginDialog();
     this.isAuthenticationCompleted = false;
     this.http
-      .get(
-      environment.sf_server_address + '/spotify/auth/url'
-      ).subscribe(url => {
+      .get(environment.sf_server_address + '/spotify/auth/url')
+      .subscribe(url => {
         this.popup_url = url;
       });
+  }
+
+  logout() {
+    this.session.clearSession();
   }
 
   login() {
@@ -38,47 +37,14 @@ export class AuthorizationService {
     return Observable.fromPromise(loginPromise).catch(this.handleError);
   }
 
-  logout() {
-    this.session.clearSession();
-    localStorage.setItem(this.storage_value_name, null);
-  }
-
-  private getToken() {
-    this.http
-      .post(
-        environment.sf_server_address + '/spotify/auth/token',
-      this.session
-      )
-      .toPromise()
-      .then(session => {
-        this.session.initTokens(session);
-      });
-  }
-
-  public refreshToken() {
-    this.http
-      .put(
-        environment.sf_server_address + '/spotify/auth/token',
-      this.session
-      )
-      .toPromise()
-      .then(session => {
-        this.session.initTokens(session);
-      });
-  }
-
   private getStorageChangedFunction(resolve) {
     return event => {
-      if (event.key === this.storage_value_name) {
+      if (event.key === Session.STORAGE_CODE_KEY) {
         if (this.authenticationDialog) {
           this.authenticationDialog.close();
         }
         this.isAuthenticationCompleted = true;
-        window.removeEventListener(
-          'storage',
-          this.storageChangedBehavior,
-          false
-        );
+        window.removeEventListener('storage', this.storageChangedBehavior, false);
         this.session.code = event.newValue;
         this.getToken();
         return resolve(event.newValue);
@@ -98,9 +64,27 @@ export class AuthorizationService {
           window.clearInterval(interval);
           this.loginDialog.callReject(reject, this.isAuthenticationCompleted);
         }
-      } catch (e) { }
+      } catch (e) {}
     }, 1000000);
     return win;
+  }
+
+  private getToken(): Promise<void> {
+    return this.http
+      .post(environment.sf_server_address + '/spotify/auth/token', this.session)
+      .toPromise()
+      .then(session => {
+        this.session.initTokens(session);
+      });
+  }
+
+  public refreshToken(): Promise<void> {
+    return this.http
+      .put(environment.sf_server_address + '/spotify/auth/token', this.session)
+      .toPromise()
+      .then(session => {
+        this.session.initTokens(session);
+      });
   }
 
   private handleError(error: Response) {
@@ -116,7 +100,14 @@ class LoginDialog {
   top = screen.height / 2 - 250; // Dialog height is 500
 
   name = 'Spotify';
-  options = 'menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,width=' + this.w + ',height=' + this.h + ',top=' + this.top + ',left=' + this.left;
+  options = 'menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,width=' +
+    this.w +
+    ',height=' +
+    this.h +
+    ',top=' +
+    this.top +
+    ',left=' +
+    this.left;
 
   callReject(reject, authCompleted) {
     if (!authCompleted) {

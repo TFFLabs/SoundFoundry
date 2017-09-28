@@ -10,7 +10,6 @@ import { SpotifyService } from 'app/services/spotify.service';
 import { User } from 'app/models/user';
 import { UserService } from 'app/services/user.service';
 import { Room } from 'app/models/room';
-import { AuthorizationService } from 'app/services/authorization.service';
 import { environment } from '../../environments/environment';
 import { EventsService } from '../services/events.service';
 import { PlaybackContext } from 'app/models/playback_context';
@@ -25,7 +24,6 @@ export class PlaylistService {
   private time_difference_tolerance_ms = 5000;
 
   constructor(
-    private authorizationService: AuthorizationService,
     private spotifyService: SpotifyService,
     private userService: UserService,
     private http: Http,
@@ -54,37 +52,55 @@ export class PlaylistService {
           });
 
         // Once we have the initial values, proceed with socket configuration
-        socketListener.configure({
-          host: this.server_address + '/soundfoundry-socket',
-          debug: false,
-          queue: { init: false }
-        });
-
+        this.configureWebSocket();
         // start socket connection
-        socketListener.startConnect().then(() => {
-          socketListener.done('init');
-          // subscribe socket to the specific room topic feed
-          socketListener.subscribe(
-            '/topic/room/' + this.room.name,
-            this.process_room_feed,
-            {
-              user: {
-                id: this.userService.user.display_name,
-                name: this.userService.user.display_name,
-                img_url: this.userService.user.thumbnail_small
-              }
-            }
-          );
-
-          // subscribe socket to the specific room tracks list feed
-          socketListener.subscribe(
-            '/topic/room/' + this.room.name + '/tracks',
-            this.process_tracks_feed
-          );
-        });
+        this.connectWebSocket();
+        // Add Socket subscriptions
+        this.addSocketSubscriptions();
         return this.room;
       })
       .then (() => this.userService.registerUserInRoom(this.room));
+  }
+
+  private configureWebSocket() {
+    this.socketListener.configure({
+      host: this.server_address + '/soundfoundry-socket',
+      debug: environment.stomp_debug,
+      queue: { init: false}
+    });
+  }
+
+  private connectWebSocket() {
+    this.socketListener.startConnect().then(() => {
+      this.socketListener.done('init');
+    });
+  }
+
+  private addSocketSubscriptions() {
+    this.socketListener.after('init').then(() => {
+      try {
+        // subscribe socket to the specific room topic feed
+        this.socketListener.subscribe(
+          '/topic/room/' + this.room.name,
+          this.process_room_feed,
+          {
+            user: {
+              id: this.userService.user.display_name,
+              name: this.userService.user.display_name,
+              img_url: this.userService.user.thumbnail_small
+            }
+          }
+        );
+
+        // subscribe socket to the specific room tracks list feed
+        this.socketListener.subscribe(
+          '/topic/room/' + this.room.name + '/tracks',
+          this.process_tracks_feed
+        );
+      }catch (Error) {
+        this.addSocketSubscriptions();
+      }
+    });
   }
 
   private process_room_feed = data => {
@@ -98,7 +114,6 @@ export class PlaylistService {
       this.room.users = aux.users;
       if (send_play_signal) {
         this.playCurrentSong();
-        this.authorizationService.refreshToken();
       }
     } else {
       this.room = new Room().deserialize(data);

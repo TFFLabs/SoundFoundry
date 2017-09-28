@@ -1,12 +1,12 @@
-import { Component, OnInit } from "@angular/core";
-import { AuthorizationService } from "../services/authorization.service";
-import { Router } from "@angular/router";
-import { Session } from "app/services/session.service";
+import { Component, OnInit } from '@angular/core';
+import { AuthorizationService } from '../services/authorization.service';
+import { Router } from '@angular/router';
+import { Session } from 'app/services/session.service';
 
 @Component({
-  selector: "app-login",
-  templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.css"]
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
   constructor(
@@ -18,20 +18,14 @@ export class LoginComponent implements OnInit {
   ngOnInit() {}
 
   login() {
-    
-    if (this.isTokenNeeded()) {
+    if (!this.session.hasActiveSession()) {
       this.startLoginFlow();
     } else {
       this.navigateToLandingPage();
     }
   }
 
-  private isTokenNeeded(){
-    const authtoken = this.session.access_token;
-    return !authtoken || authtoken == "null";
-  }
-
-  private startLoginFlow(){
+  private startLoginFlow() {
     this.authorizationService.login().subscribe(
       token => {
         this.navigateToLandingPage();
@@ -41,7 +35,7 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  private navigateToLandingPage(){
-    this.router.navigate(["/landing"]);
+  private navigateToLandingPage() {
+    this.router.navigate(['/landing']);
   }
 }

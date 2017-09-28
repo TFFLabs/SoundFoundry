@@ -1,4 +1,4 @@
-<div *ngIf="session.access_token;then home else login"></div>
+<div *ngIf="session.hasActiveSession() then home else login"></div>
 
 <ng-template #home><app-home></app-home></ng-template>
 <ng-template #login><app-login></app-login></ng-template>
