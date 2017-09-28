@@ -23,7 +23,6 @@ export class User implements Serializable<User> {
       }
       this.thumbnail_small = this.getSmallestImage();
     }
-
     return this;
   }
 

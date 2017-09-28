@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { PlaylistService } from 'app/services/playlist.service';
-import { UserService } from "app/services/user.service";
+import { UserService } from 'app/services/user.service';
 
 @Component({
   selector: 'app-room',
@@ -26,8 +26,8 @@ export class RoomComponent implements OnInit {
     });
   }
 
-  @HostListener('window:beforeunload', [ '$event' ])
+  @HostListener('window:beforeunload', ['$event'])
   beforeUnloadHander(event) {
-    this.userService.deregisterUserFromRoom(this.playlistService.room)
+    return this.userService.deregisterUserFromRoom(this.playlistService.room);
   }
 }
