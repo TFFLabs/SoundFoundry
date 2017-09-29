@@ -20,6 +20,7 @@ export class PlaylistService {
   previewing: Track;
   room: Room = new Room();
   tracks: Track[] = [];
+  retry_count: number;
   private server_address = environment.sf_server_address;
   private time_difference_tolerance_ms = 5000;
 
@@ -77,7 +78,7 @@ export class PlaylistService {
   }
 
   private addSocketSubscriptions() {
-    this.socketListener.after('init').then(() => {
+      this.socketListener.after('init').then(() => {
       try {
         // subscribe socket to the specific room topic feed
         this.socketListener.subscribe(
@@ -97,8 +98,14 @@ export class PlaylistService {
           '/topic/room/' + this.room.name + '/tracks',
           this.process_tracks_feed
         );
+        this.retry_count = 0;
       }catch (Error) {
-        this.addSocketSubscriptions();
+        if (this.retry_count < 5) {
+          this.retry_count++;
+          this.addSocketSubscriptions();
+        }else {
+          throw Error;
+        }
       }
     });
   }
