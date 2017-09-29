@@ -1,28 +1,52 @@
 .login-container {
-  min-width: 100vw;
-  min-height: 100vh;
-  /* background-image: url('../../assets/img/foundryHome.jpg');*/
-  background-size: cover;
-  background-clip: border-box;
-  background-attachment: scroll;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
-.login-button {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 24px;
-    border-radius: 12px;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-    margin-top: 50vh;
+.album {
+  height: 300px;
+  width: 300px;
+  display: flex;
 }
 
-.login-button:hover {
-    background-color: white; /* Green */
-    color: #4CAF50;
+div.album:hover .vinyl {
+  -webkit-transform: translateX(150px) rotate(195deg);
+  -moz-transform: translateX(150px) rotate(195deg);
+  -ms-transform: translateX(150px) rotate(195deg);
+  -o-transform: translateX(150px) rotate(195deg);
+  transform: translateX(150px) rotate(195deg);
+}
+
+.vinyl {
+  position: absolute;
+  height: 300px;
+  width: 300px;
+  z-index: -1;
+  -webkit-transition: all 0.25s ease-out;
+  transition: all 0.25s ease-out;
+  background-image: url("../../assets/img/vinyl.png");
+  background-size: contain;
+}
+
+.cover {
+  background-color: #222;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 24px;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  position: absolute;
+  height: 300px;
+  width: 300px;
+  z-index: 0;
+  background-image: url("../../assets/img/foundry_vinyl.png");
+  background-size: 100% 100%;
+}
+
+.cover:hover {
+  background-image: url("../../assets/img/foundry_vinyl_white.png");
 }
