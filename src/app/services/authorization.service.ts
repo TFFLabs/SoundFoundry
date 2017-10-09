@@ -70,7 +70,7 @@ export class AuthorizationService {
   }
 
   private getToken(): Promise<void> {
-    setTimeout(() => {this.getToken()}, 3000000);
+    setTimeout(() => {this.refreshToken()}, 3000000);
     return this.http
       .post(environment.sf_server_address + '/spotify/auth/token', this.session)
       .toPromise()
@@ -80,6 +80,7 @@ export class AuthorizationService {
   }
 
   public refreshToken(): Promise<void> {
+    setTimeout(() => {this.refreshToken()}, 3000000);
     return this.http
       .put(environment.sf_server_address + '/spotify/auth/token', this.session)
       .toPromise()
