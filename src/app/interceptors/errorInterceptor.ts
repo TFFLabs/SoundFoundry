@@ -32,23 +32,17 @@ export class ErrorInterceptor implements HttpInterceptor {
       event => {},
       err => {
         if (err instanceof HttpErrorResponse && err.status === 401) {
-          try {
-            // Hack to avoid cyclic injection error
-            this.authService = this.injector.get(AuthorizationService);
-            this.authService.refreshToken().then(() => next.handle(req));
-          } catch (err) {
-            const snackBarRef = this.snackBar.open(
-              'Session expired, redirecting to login...',
-              '',
-              {
-                duration: 2000
-              }
-            );
-            snackBarRef.afterDismissed().subscribe(() => {
-              this.session.clearSession();
-              this.router.navigate(['']);
-            });
-          }
+          const snackBarRef = this.snackBar.open(
+            'Session expired, redirecting to login...',
+            '',
+            {
+              duration: 2000
+            }
+          );
+          snackBarRef.afterDismissed().subscribe(() => {
+            this.session.clearSession();
+            this.router.navigate(['']);
+          });
         }
       }
     );
