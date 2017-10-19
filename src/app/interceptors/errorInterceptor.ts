@@ -10,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
 import { Router } from '@angular/router';
 import { Session } from 'app/services/session.service';
-import { MdSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { AuthorizationService } from 'app/services/authorization.service';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     private router: Router,
     private session: Session,
     private injector: Injector,
-    public snackBar: MdSnackBar
+    public snackBar: MatSnackBar
   ) {}
 
   intercept(

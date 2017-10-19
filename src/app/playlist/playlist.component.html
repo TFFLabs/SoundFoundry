@@ -1,36 +1,36 @@
 <div *ngIf="playlistService.tracks.length >= 1" class="playlist">
-	<md-list *ngIf="playlistService.tracks.length >= 1">
-		<md-list-item *ngFor="let track of playlistService.tracks">
-			<img md-list-avatar src="{{track.album.getSmallestImage().url}}" alt="{{track.album.name}}" />
-			<h3 md-line> {{track.name}}</h3>
-			<h4 md-line>
-				<a class="playlist-artist" mdTooltip="Artists">
+	<mat-list *ngIf="playlistService.tracks.length >= 1">
+		<mat-list-item *ngFor="let track of playlistService.tracks">
+			<img mat-list-avatar src="{{track.album.getSmallestImage().url}}" alt="{{track.album.name}}" />
+			<h3 mat-line> {{track.name}}</h3>
+			<h4 mat-line>
+				<a class="playlist-artist" matTooltip="Artists">
 					<ng-container *ngFor="let artist of track.artists">
 						{{artist.name}}
 					</ng-container>
 				</a>
 				<a class="playlist-artist-album-divider">/</a>
-				<a class="playlist-album" mdTooltip="Album">
+				<a class="playlist-album" matTooltip="Album">
 					{{track.album.name}}
 				</a>
 			</h4>
-			<h3 md-line class="votes" class="votes">
-				<img [style.background]="track.voters[0].getVoterColor()" mdTooltip="{{track.getVotersNameList()}}" *ngIf="track.voters.length > 0" src="{{track.voters[0].getSmallestImage().url}}" alt="{{track.voters[0].display_name}}"/>
-				<div mdTooltip="{{track.getVotersNameList()}}" *ngIf="track.voters.length > 1">+{{track.voters.length - 1}}</div>
+			<h3 mat-line class="votes" class="votes">
+				<img [style.background]="track.voters[0].getVoterColor()" matTooltip="{{track.getVotersNameList()}}" *ngIf="track.voters.length > 0" src="{{track.voters[0].getSmallestImage().url}}" alt="{{track.voters[0].display_name}}"/>
+				<div matTooltip="{{track.getVotersNameList()}}" *ngIf="track.voters.length > 1">+{{track.voters.length - 1}}</div>
 			</h3>
-			<button [disabled]="!track.preview_url" md-icon-button (click)="playStopPreview(track)">
-				<md-icon *ngIf="(playlistService.previewing.id === track.id && playlistService.previewing.isPreviewing)" mdTooltip="Stop preview" >visibility_off</md-icon>
-				<md-icon *ngIf="(playlistService.previewing.id === track.id && !playlistService.previewing.isPreviewing) || playlistService.previewing.id !== track.id" mdTooltip="Play preview">visibility</md-icon>
+			<button [disabled]="!track.preview_url" mat-icon-button (click)="playStopPreview(track)">
+				<mat-icon *ngIf="(playlistService.previewing.id === track.id && playlistService.previewing.isPreviewing)" matTooltip="Stop preview" >visibility_off</mat-icon>
+				<mat-icon *ngIf="(playlistService.previewing.id === track.id && !playlistService.previewing.isPreviewing) || playlistService.previewing.id !== track.id" matTooltip="Play preview">visibility</mat-icon>
 			</button>
-			<button md-icon-button (click)="toogleVote(track)">
-				<md-icon *ngIf="!track.isUpvoted(userService.user)">thumb_up</md-icon>
-				<md-icon *ngIf="track.isUpvoted(userService.user)" class="upvoted-icon">thumb_up</md-icon>
+			<button mat-icon-button (click)="toogleVote(track)">
+				<mat-icon *ngIf="!track.isUpvoted(userService.user)">thumb_up</mat-icon>
+				<mat-icon *ngIf="track.isUpvoted(userService.user)" class="upvoted-icon">thumb_up</mat-icon>
 			</button>
-			<button md-icon-button mdTooltip="TBD" >
-				<md-icon>list</md-icon>
+			<button mat-icon-button matTooltip="TBD" >
+				<mat-icon>list</mat-icon>
 			</button>
-		</md-list-item>
-	</md-list>
+		</mat-list-item>
+	</mat-list>
 </div>
 <div *ngIf="playlistService.tracks.length < 1" class="playlist-empty">
 	DRAG A SONG FROM SPOTIFY IN HERE!

@@ -10,7 +10,7 @@ export class EventsService {
   constructor(private stomp: StompService) {
     // Configure stomp client
     stomp.configure({
-      host: environment.sf_server_address + '/events',
+      host: environment.sf_server_address + '/soundfoundry-socket',
       debug: environment.stomp_debug,
       queue: { 'init': false, 'events': false }
     });
@@ -31,6 +31,18 @@ export class EventsService {
   subscribeToEvents(callback: any) {
     this.stomp.after('init').then( () => {
       this.stomp.subscribe('/topic/events', callback);
+    });
+  }
+
+  subscribeToRoom(roomName: string, callback: any, user: any) {
+    this.stomp.after('init').then( () => {
+      this.stomp.subscribe('/topic/room/' + roomName, callback, user);
+    });
+  }
+
+  subscribeToRoomTracks(roomName: string, callback: any) {
+    this.stomp.after('init').then( () => {
+      this.stomp.subscribe('/topic/room/' + roomName + '/tracks', callback);
     });
   }
 

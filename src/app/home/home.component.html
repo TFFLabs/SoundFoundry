@@ -1,30 +1,30 @@
 <div class="left_bar">
-    <button md-icon-button [mdMenuTriggerFor]="user_options">
+    <button mat-icon-button [matMenuTriggerFor]="user_options">
         <img *ngIf="userService.user.images" src="{{userService.user.thumbnail_small.url}}" alt="{{userService.user.display_name}}" class="profile_image"/>
     </button>
-    <button md-icon-button class="devices_button" [mdMenuTriggerFor]="devices_list" (click)="userService.loadUserDevices()">
-        <md-icon>devices</md-icon>
+    <button mat-icon-button class="devices_button" [matMenuTriggerFor]="devices_list" (click)="userService.loadUserDevices()">
+        <mat-icon>devices</mat-icon>
     </button>
-    <button md-icon-button class="help_button">
-        <md-icon>help</md-icon>
+    <button mat-icon-button class="help_button">
+        <mat-icon>help</mat-icon>
     </button>
 </div>
 <div class="canvas">
     <app-room></app-room>
 </div>
 
-<md-menu #devices_list="mdMenu" [overlapTrigger]="false">
+<mat-menu #devices_list="matMenu" [overlapTrigger]="false">
     <div *ngFor="let device of userService.devices.devices">
-        <button md-menu-item (click)="selectedOption = option">
-            <md-icon> {{device.getSelectedStatusIcon()}} </md-icon>
+        <button mat-menu-item (click)="selectedOption = option">
+            <mat-icon> {{device.getSelectedStatusIcon()}} </mat-icon>
             <span> {{device.name}} </span>   
         </button>
     </div>
-</md-menu>
+</mat-menu>
 
-<md-menu #user_options="mdMenu" [overlapTrigger]="false">
-    <button md-menu-item (click)="logout()">
-        <md-icon> settings_power </md-icon>
+<mat-menu #user_options="matMenu" [overlapTrigger]="false">
+    <button mat-menu-item (click)="logout()">
+        <mat-icon> settings_power </mat-icon>
         <span> Logout </span>
     </button>
-</md-menu>
+</mat-menu>
