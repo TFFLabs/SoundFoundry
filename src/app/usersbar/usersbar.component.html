@@ -1,6 +1,6 @@
-<md-list>
-    <md-list-item *ngFor="let user of playlistService.room.users">
-        <img md-list-avatar src="{{user.getSmallestImage().url}}" alt="{{user.display_name}}" />
-        <h3 md-line> {{user.display_name}}</h3>
-    </md-list-item>
-</md-list>
+<mat-list>
+    <mat-list-item *ngFor="let user of playlistService.room.users">
+        <img mat-list-avatar src="{{user.getSmallestImage().url}}" alt="{{user.display_name}}" />
+        <h3 mat-line> {{user.display_name}}</h3>
+    </mat-list-item>
+</mat-list>
