@@ -28,7 +28,6 @@ export class PlaylistService {
     private spotifyService: SpotifyService,
     private userService: UserService,
     private http: Http,
-    private socketListener: StompService,
     private eventsService: EventsService
   ) {
     // This shall come from the routing call in a future
@@ -52,62 +51,30 @@ export class PlaylistService {
               : [];
           });
 
-        // Once we have the initial values, proceed with socket configuration
-        this.configureWebSocket();
-        // start socket connection
-        this.connectWebSocket();
-        // Add Socket subscriptions
         this.addSocketSubscriptions();
         return this.room;
       })
       .then (() => this.userService.registerUserInRoom(this.room));
   }
 
-  private configureWebSocket() {
-    this.socketListener.configure({
-      host: this.server_address + '/soundfoundry-socket',
-      debug: environment.stomp_debug,
-      queue: { init: false}
-    });
-  }
-
-  private connectWebSocket() {
-    this.socketListener.startConnect().then(() => {
-      this.socketListener.done('init');
-    });
-  }
-
   private addSocketSubscriptions() {
-      this.socketListener.after('init').then(() => {
-      try {
-        // subscribe socket to the specific room topic feed
-        this.socketListener.subscribe(
-          '/topic/room/' + this.room.name,
-          this.process_room_feed,
-          {
-            user: {
-              id: this.userService.user.display_name,
-              name: this.userService.user.display_name,
-              img_url: this.userService.user.thumbnail_small
-            }
+      this.eventsService.subscribeToRoom(
+        this.room.name,
+        this.process_room_feed,
+        {
+          user: {
+            id: this.userService.user.display_name,
+            name: this.userService.user.display_name,
+            img_url: this.userService.user.thumbnail_small
           }
-        );
-
-        // subscribe socket to the specific room tracks list feed
-        this.socketListener.subscribe(
-          '/topic/room/' + this.room.name + '/tracks',
-          this.process_tracks_feed
-        );
-        this.retry_count = 0;
-      }catch (Error) {
-        if (this.retry_count < 5) {
-          this.retry_count++;
-          this.addSocketSubscriptions();
-        }else {
-          throw Error;
         }
-      }
-    });
+      );
+
+      this.eventsService.subscribeToRoomTracks(
+        this.room.name,
+        this.process_tracks_feed
+      );
+
   }
 
   private process_room_feed = data => {

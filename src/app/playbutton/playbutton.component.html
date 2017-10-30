@@ -3,27 +3,27 @@
     <div class="col-image">
       <img src="{{playlistService.room.currently_playing.album.getMediumImage().url}}" class="image" />
       <div class="image-over">
-        <md-icon *ngIf="!playlistService.isPlaying" (click)="play()">play_circle_filled</md-icon>
-        <md-icon *ngIf="playlistService.isPlaying" (click)="pause()">pause_circle_filled</md-icon>
+        <mat-icon *ngIf="!playlistService.isPlaying" (click)="play()">play_circle_filled</mat-icon>
+        <mat-icon *ngIf="playlistService.isPlaying" (click)="pause()">pause_circle_filled</mat-icon>
       </div>
     </div>
     <div class="col-song-name">
-      <md-progress-bar [color]="progress_bar_color" [mode]="progress_bar_mode" [value]="playlistService.room.currently_playing.progressPercentage">
-      </md-progress-bar>
+      <mat-progress-bar [color]="progress_bar_color" [mode]="progress_bar_mode" [value]="playlistService.room.currently_playing.progressPercentage">
+      </mat-progress-bar>
       <h4>
         <p>
           <a>{{playlistService.room.currently_playing.name}}</a><br/>
-          <a class="playlist-artist" mdTooltip="Artists">
+          <a class="playlist-artist" matTooltip="Artists">
             <ng-container *ngFor="let artist of playlistService.room.currently_playing.artists">
               {{artist.name}}
             </ng-container>
           </a>
           <a class="playlist-artist-album-divider">/</a>
-          <a class="playlist-album" mdTooltip="Album">
+          <a class="playlist-album" matTooltip="Album">
             {{playlistService.room.currently_playing.album.name}}
           </a><br/>
           <img [style.background]="playlistService.room.currently_playing.voters[0].getVoterColor()" class="owner_img" *ngIf="playlistService.room.currently_playing.voters.length > 0" src="{{playlistService.room.currently_playing.voters[0].getSmallestImage().url}}"
-            mdTooltip="{{playlistService.room.currently_playing.voters[0].display_name}}" alt="{{playlistService.room.currently_playing.voters[0].display_name}}"
+            matTooltip="{{playlistService.room.currently_playing.voters[0].display_name}}" alt="{{playlistService.room.currently_playing.voters[0].display_name}}"
           />
         </p>
       </h4>

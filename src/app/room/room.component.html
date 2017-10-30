@@ -1,7 +1,7 @@
 <section class="mat-typography">
     <div *ngIf="!playlistService.room">
-        <md-progress-spinner style="margin:0 auto;" mode="indeterminate">
-        </md-progress-spinner>
+        <mat-progress-spinner style="margin:0 auto;" mode="indeterminate">
+        </mat-progress-spinner>
     </div>
     <div *ngIf="playlistService.room" dnd-droppable (onDropSuccess)="addSong($event)">
         <div class="room-header">
@@ -16,15 +16,15 @@
             <app-playbutton></app-playbutton>
             <app-playlist></app-playlist>
         </div>
-        <md-tab-group class="demo-tab-group">
-            <md-tab label="Chat" disabled>
-            </md-tab>
-            <md-tab label="Users">
+        <mat-tab-group class="demo-tab-group">
+            <mat-tab label="Chat" disabled>
+            </mat-tab>
+            <mat-tab label="Users">
                 <app-usersbar></app-usersbar>
-            </md-tab>
-            <md-tab label="Log">
+            </mat-tab>
+            <mat-tab label="Log">
                 <app-eventslog></app-eventslog>
-            </md-tab>
-        </md-tab-group>
+            </mat-tab>
+        </mat-tab-group>
     </div>
 </section>
